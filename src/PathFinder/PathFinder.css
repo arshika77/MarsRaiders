@@ -1,0 +1,25 @@
+.gridlines {
+    padding: 40px 40px;
+    margin: 100px 0 0;
+}
+
+.navbar {
+    width: 100%;
+}
+
+.button {
+    display: inline-block;
+    background-color: #066d20;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 12px;
+    padding: 20px;
+    width: 200px;
+    transition: all 0.5s;
+    cursor: pointer;
+    float: left;
+    border: 1px solid rgb(9, 1, 36);
+  }
+  
+ 
