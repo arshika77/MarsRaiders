@@ -3,6 +3,8 @@ import Node from './Node/Node'
 import {dijkstra, getNodesInShortestPathOrder, calcDistance} from '../algorithms/dijkstra'
 import './PathFinder.css'
 
+
+//Define the initial starting point and the initial destination point of the rover
 let START_NODE_ROW = 5;
 let START_NODE_COL = 15;
 let FINISH_NODE_ROW = 10;
@@ -29,6 +31,7 @@ export default class PathFinder extends Component {
     }
 
     handleMouseDown(row, col) {
+        //When <button> Move starting point </button> is clicked
         if(this.state.startPos){
             const oldRow = START_NODE_ROW
             const oldCol = START_NODE_COL
@@ -39,6 +42,7 @@ export default class PathFinder extends Component {
             START_NODE_COL = col
             START_NODE_ROW = row
         }
+        //When <button> Move destination point </button> is clicked
         else if(this.state.finishPos){
             const oldRow = FINISH_NODE_ROW
             const oldCol = FINISH_NODE_COL
@@ -49,13 +53,16 @@ export default class PathFinder extends Component {
             FINISH_NODE_COL = col
             FINISH_NODE_ROW = row
         }
+        //When <button> Erase Walls </button> is pressed and current node is a wall
         else if(this.state.erase && this.state.grid[row][col].isWall){
             const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
             this.setState({grid: newGrid, mouseIsPressed: true})
         }
+        //When <button> Erase Walls </button> is pressed and current node is not a wall
         else if(this.state.erase && !this.state.grid[row][col].isWall){
             this.setState({mouseIsPressed:true})
         }
+        //Drawing walls on the grid 
         else{
             const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
             this.setState({grid: newGrid, mouseIsPressed: true})
@@ -63,7 +70,9 @@ export default class PathFinder extends Component {
     }
 
     handleMouseEnter(row, col) {
+        //When mouse is not pressed don't do anything
         if (!this.state.mouseIsPressed) return
+        //When <button> Erase Walls </button> is pressed
         if(this.state.erase) {
             const node = this.state.grid[row][col]
             if(node.isWall){
@@ -71,6 +80,7 @@ export default class PathFinder extends Component {
                 this.setState({grid: newGrid})
             }
         }
+        //Draw Walls
         else{
             const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
             this.setState({grid: newGrid})
@@ -79,18 +89,22 @@ export default class PathFinder extends Component {
     }
 
     handleMouseUp() {
+        //On releasing the mouse button
         this.setState({mouseIsPressed: false})
     }
 
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+        //Set Distance value to Visualizing
         this.setState({dist:"Visualizing..."})
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+            //animate visited nodes : Refer to Node.css for animation details
           if (i === visitedNodesInOrder.length) {
             setTimeout(() => {
               this.animateShortestPath(nodesInShortestPathOrder);
             }, 10 * i);
             return;
           }
+          //Do not animate start point and destination point
           if(visitedNodesInOrder[i].isStart || visitedNodesInOrder[i].isFinish) continue
           setTimeout(() => {
             const node = visitedNodesInOrder[i];
@@ -102,7 +116,9 @@ export default class PathFinder extends Component {
     }
     
     animateShortestPath(nodesInShortestPathOrder) {
+        //animate shortest path : Refer to Node.css for animation details
         for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+            //Do not animate start point and destination point
             if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish) continue  
           setTimeout(() => {
             const node = nodesInShortestPathOrder[i];
@@ -110,12 +126,14 @@ export default class PathFinder extends Component {
               'node node-shortest-path';
           }, 50 * i);
         }
+        // Set Distance value to distance between start point and destination point
         this.setState({dist:calcDistance(nodesInShortestPathOrder)});
     }
     
     
 
     visualizeDijkstra() {
+        //Start Visualization
         const {grid} = this.state;
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
@@ -125,14 +143,17 @@ export default class PathFinder extends Component {
     }
 
     eraseWalls() {
+        //Toggle erase state on button press
         this.setState({erase: !this.state.erase})
     }
 
     startPosition() {
+        //Toggle startPos state on button press
         this.setState({startPos: !this.state.startPos})
     }
 
     finishPosition() {
+        //Toggle finishPos state on button press
         this.setState({finishPos: !this.state.finishPos})
     }
 
@@ -154,7 +175,7 @@ export default class PathFinder extends Component {
                         Move starting point
                     </button>
                     <button className = 'button' onClick={() => this.finishPosition()}>
-                        Move ending point
+                        Move destination point
                     </button>
                 </navbar>
                 <br></br> <br></br> <br></br>
@@ -195,6 +216,7 @@ export default class PathFinder extends Component {
 
 
 const getGrid = () => {
+    //Initial grid setup
     const grid = [];
     for ( let row = 0; row < 20; row++){
         const currentRow = [];
@@ -207,6 +229,7 @@ const getGrid = () => {
 }
 
 const createNode = (col,row) => {
+    //Creating new node
     return {
         col,
         row,
@@ -221,9 +244,11 @@ const createNode = (col,row) => {
 
 
 const getWallToggledGrid = (grid, row, col,erase) => {
+    //Draw wall function
     const newGrid = grid.slice()
     const node = newGrid[row][col]
     let nNode = node
+    //If erase button is not pressed and a wall doesn't exist at the node already - then draw a wall
     if (!node.isWall && erase === false){
         const newNode = {
             ...node,
@@ -231,6 +256,7 @@ const getWallToggledGrid = (grid, row, col,erase) => {
         }
         nNode = newNode
     }
+    //If erase button is pressed : (Proper functioning rendered due to event handling functions)
     else if(erase){
         const newNode = {
             ...node,
