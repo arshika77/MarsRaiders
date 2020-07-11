@@ -3,7 +3,6 @@ import Node from './Node/Node'
 import {dijkstra, getNodesInShortestPathOrder, calcDistance} from '../algorithms/dijkstra'
 import './PathFinder.css'
 
-
 //Define the initial starting point and the initial destination point of the rover
 let START_NODE_ROW = 5;
 let START_NODE_COL = 15;
@@ -165,18 +164,20 @@ export default class PathFinder extends Component {
                     <button className='button' onClick={() => this.visualizeDijkstra()}>
                         Visualize Dijkstra's Algorithm
                     </button>
-                    <button className='button' onClick = { () =>  this.eraseWalls()}>
-                        Erase Walls
-                    </button>
-                    <form action="http://localhost:3000/">
-                        <button className='button'> Clear Grid </button>    
-                    </form>
                     <button className = 'button' onClick={() => this.startPosition()}>
-                        Move starting point
+                        { this.state.startPos ? "Fix starting point" : "Move starting point"}
                     </button>
                     <button className = 'button' onClick={() => this.finishPosition()}>
-                        Move destination point
+                        { this.state.finishPos ? "Fix destination point" : "Move destination point"}
                     </button>
+                    <button className='button' onClick = { () =>  this.eraseWalls()}>
+                        { this.state.erase? "Stop Erasing" : "Erase Walls"}
+                    </button>
+                    <form action="http://localhost:3000/">
+                        <button className='button'> 
+                            Clear Grid 
+                        </button>    
+                    </form>
                 </navbar>
                 <br></br> <br></br> <br></br>
                 <div className = 'gridline'>
