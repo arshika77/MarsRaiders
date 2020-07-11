@@ -29,14 +29,14 @@ export default class PathFinder extends Component {
 
     handleMouseDown(row, col) {
         if(this.state.erase && this.state.grid[row][col].isWall){
-            const newGrid = getWallToggledGrid(this.state.grid, row, col)
+            const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
             this.setState({grid: newGrid, mouseIsPressed: true})
         }
         else if(this.state.erase && !this.state.grid[row][col].isWall){
             this.setState({mouseIsPressed:true})
         }
         else{
-            const newGrid = getWallToggledGrid(this.state.grid, row, col)
+            const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
             this.setState({grid: newGrid, mouseIsPressed: true})
         }
     }
@@ -46,12 +46,12 @@ export default class PathFinder extends Component {
         if(this.state.erase) {
             const node = this.state.grid[row][col]
             if(node.isWall){
-                const newGrid = getWallToggledGrid(this.state.grid, row, col)
+                const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
                 this.setState({grid: newGrid})
             }
         }
         else{
-            const newGrid = getWallToggledGrid(this.state.grid, row, col)
+            const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
             this.setState({grid: newGrid})
         }
 
@@ -186,13 +186,24 @@ const createNode = (col,row) => {
 }
 
 
-const getWallToggledGrid = (grid, row, col) => {
+const getWallToggledGrid = (grid, row, col,erase) => {
     const newGrid = grid.slice()
     const node = newGrid[row][col]
-    const newNode = {
-        ...node,
-        isWall: !node.isWall
+    let nNode = node
+    if (!node.isWall && erase === false){
+        const newNode = {
+            ...node,
+            isWall: !node.isWall
+        }
+        nNode = newNode
     }
-    newGrid[row][col] = newNode
+    else if(erase){
+        const newNode = {
+            ...node,
+            isWall: !node.isWall
+        }
+        nNode = newNode
+    }
+    newGrid[row][col] = nNode
     return newGrid
 }
