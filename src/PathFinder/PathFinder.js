@@ -70,6 +70,7 @@ export default class PathFinder extends Component {
             }, 10 * i);
             return;
           }
+          if(visitedNodesInOrder[i].isStart || visitedNodesInOrder[i].isFinish) continue
           setTimeout(() => {
             const node = visitedNodesInOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -81,6 +82,7 @@ export default class PathFinder extends Component {
     
     animateShortestPath(nodesInShortestPathOrder) {
         for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish) continue  
           setTimeout(() => {
             const node = nodesInShortestPathOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -101,7 +103,7 @@ export default class PathFinder extends Component {
         this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);   
     }
 
-    eraseWalls(node,row,col) {
+    eraseWalls() {
         this.setState({erase: !this.state.erase})
     }
 

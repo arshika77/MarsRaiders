@@ -65,7 +65,7 @@ export function calcDistance(nodesInShortestPathOrder){
     dx = nodesInShortestPathOrder[i].col - nodesInShortestPathOrder[i-1].col;
     sum+= Math.sqrt(dx*dx + dy*dy);
   }
-  return sum;
+  return (sum!=0) ? sum : "No possible path";
   
   
 }
