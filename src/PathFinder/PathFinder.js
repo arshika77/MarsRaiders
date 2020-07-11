@@ -28,6 +28,7 @@ export default class PathFinder extends Component {
     }
 
     handleMouseDown(row, col) {
+<<<<<<< HEAD
         if (this.state.grid[row][col].isStart && !this.state.erase) {
             const newGrid = getNewStartGrid(this.state.grid,row,col)
             this.setState({grid: newGrid, mouseIsPressed: true})
@@ -38,13 +39,17 @@ export default class PathFinder extends Component {
         }
         else if(this.state.erase && this.state.grid[row][col].isWall){
             const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
+=======
+        if(this.state.erase && this.state.grid[row][col].isWall){
+            const newGrid = getWallToggledGrid(this.state.grid, row, col)
+>>>>>>> parent of 8d4ee9c... Polished wall toggling (New code might need some cleaning)
             this.setState({grid: newGrid, mouseIsPressed: true})
         }
         else if(this.state.erase && !this.state.grid[row][col].isWall){
             this.setState({mouseIsPressed:true})
         }
         else{
-            const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
+            const newGrid = getWallToggledGrid(this.state.grid, row, col)
             this.setState({grid: newGrid, mouseIsPressed: true})
         }
     }
@@ -63,12 +68,12 @@ export default class PathFinder extends Component {
         else if(this.state.erase) {
             const node = this.state.grid[row][col]
             if(node.isWall){
-                const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
+                const newGrid = getWallToggledGrid(this.state.grid, row, col)
                 this.setState({grid: newGrid})
             }
         }
         else{
-            const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
+            const newGrid = getWallToggledGrid(this.state.grid, row, col)
             this.setState({grid: newGrid})
         }
 
@@ -232,24 +237,13 @@ const getNewFinishGrid = (grid,row,col,erase) => {
     return newGrid
 }
 
-const getWallToggledGrid = (grid, row, col,erase) => {
+const getWallToggledGrid = (grid, row, col) => {
     const newGrid = grid.slice()
     const node = newGrid[row][col]
-    let nNode = node
-    if (!node.isWall && erase === false){
-        const newNode = {
-            ...node,
-            isWall: !node.isWall
-        }
-        nNode = newNode
+    const newNode = {
+        ...node,
+        isWall: !node.isWall
     }
-    else if(erase){
-        const newNode = {
-            ...node,
-            isWall: !node.isWall
-        }
-        nNode = newNode
-    }
-    newGrid[row][col] = nNode
+    newGrid[row][col] = newNode
     return newGrid
 }
