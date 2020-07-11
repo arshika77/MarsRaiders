@@ -62,6 +62,7 @@ export default class PathFinder extends Component {
     }
 
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+        this.setState({dist:"Visualizing..."})
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
           if (i === visitedNodesInOrder.length) {
             setTimeout(() => {
@@ -86,6 +87,7 @@ export default class PathFinder extends Component {
               'node node-shortest-path';
           }, 50 * i);
         }
+        this.setState({dist:calcDistance(nodesInShortestPathOrder)});
     }
     
     
@@ -97,37 +99,10 @@ export default class PathFinder extends Component {
         const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
         const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
         this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);   
-        this.setState({dist:calcDistance(nodesInShortestPathOrder)});    
     }
-
-
-    
 
     eraseWalls(node,row,col) {
         this.setState({erase: !this.state.erase})
-    }
-
-    clearGrid() {
-        /*const grid = this.state.grid
-        for (let i = 0; i < grid.size; i++){
-            for (let j = 0; j<grid[i].size; j++){
-                const extraClassName = grid[i][j].isFinish
-                ? 'node-finish'
-                : grid[i][j].isStart
-                ? 'node-start'
-                : grid[i][j].isWall
-                ? 'node-wall'
-                : ''
-                document.getElementById(`node-${grid[i][j].row}-${grid[i][j].col}`).className = 
-                `node ${extraClassName}`
-                const grid = getGrid()
-                this.setState({grid})
-
-            }
-        }*/
-        const grid = getGrid();
-        this.setState({grid})
-        this.setState({erase:false})
     }
 
     render() {
@@ -141,9 +116,9 @@ export default class PathFinder extends Component {
                     <button className='button' onClick = { () =>  this.eraseWalls()}>
                         Erase Walls
                     </button>
-                    <button className='button' onClick = { () =>  this.clearGrid()}>
-                        <a href="http://localhost:3000/" style= {{color: 'White'}}>Clear Grid</a> 
-                    </button>
+                    <form action="http://localhost:3000/">
+                        <button className='button'> Clear Grid </button>    
+                    </form>
                     
                 </navbar>
                 <br></br> <br></br> <br></br>
@@ -175,7 +150,7 @@ export default class PathFinder extends Component {
                     })}
                 </div> 
                 <button className='button' style={{backgroundColor:"Black"}}>
-                    Distance is {this.state.dist}
+                    Distance: {this.state.dist}
                 </button>
             </div>
         )
