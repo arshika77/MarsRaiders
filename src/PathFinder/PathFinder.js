@@ -16,6 +16,7 @@ export default class PathFinder extends Component {
             mouseIsPressed: false,
             erase: false,
             clear: false,
+            dist:0
             
         }
     }
@@ -30,6 +31,9 @@ export default class PathFinder extends Component {
         if(this.state.erase && this.state.grid[row][col].isWall){
             const newGrid = getWallToggledGrid(this.state.grid, row, col)
             this.setState({grid: newGrid, mouseIsPressed: true})
+        }
+        else if(this.state.erase && !this.state.grid[row][col].isWall){
+            this.setState({mouseIsPressed:true})
         }
         else{
             const newGrid = getWallToggledGrid(this.state.grid, row, col)
@@ -92,7 +96,8 @@ export default class PathFinder extends Component {
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
         const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
         const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);       
+        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);   
+        this.setState({dist:calcDistance(nodesInShortestPathOrder)});    
     }
 
 
@@ -169,6 +174,9 @@ export default class PathFinder extends Component {
                     )
                     })}
                 </div> 
+                <button className='button' style={{backgroundColor:"Black"}}>
+                    Distance is {this.state.dist}
+                </button>
             </div>
         )
     }

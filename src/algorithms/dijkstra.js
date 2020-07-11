@@ -65,12 +65,7 @@ export function calcDistance(nodesInShortestPathOrder){
     dx = nodesInShortestPathOrder[i].col - nodesInShortestPathOrder[i-1].col;
     sum+= Math.sqrt(dx*dx + dy*dy);
   }
-  return (
-    
-    <div>
-      id={"Distance"}
-      {sum}
-    </div>
-  )
+  return sum;
+  
   
 }
