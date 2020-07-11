@@ -206,9 +206,14 @@ export default class PathFinder extends Component {
                     )
                     })}
                 </div> 
-                <button className='button' style={{backgroundColor:"Black"}}>
-                    Distance: {this.state.dist}
-                </button>
+                <div>
+                    <button className='button' style={{backgroundColor: "DarkSlateGrey"}}>
+                        Distance: {this.state.dist}
+                    </button>
+                </div>
+                <footer className='footer'> 
+                    Developed By: Arshika Lalan, Parth Agrawal, Arohi Dureja, Rupali Raniwala
+                </footer>
             </div>
         )
     }

@@ -22,4 +22,13 @@
     border: 1px solid rgb(9, 1, 36);
   }
   
+  .footer {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    font-family: cursive;
+    background-color: black;
+    color: whitesmoke;
+    text-align: center;
+  }
  
