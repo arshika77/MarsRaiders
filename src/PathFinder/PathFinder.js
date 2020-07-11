@@ -3,10 +3,10 @@ import Node from './Node/Node'
 import {dijkstra, getNodesInShortestPathOrder, calcDistance} from '../algorithms/dijkstra'
 import './PathFinder.css'
 
-const START_NODE_ROW = 5;
-const START_NODE_COL = 15;
-const FINISH_NODE_ROW = 10;
-const FINISH_NODE_COL = 35;
+let START_NODE_ROW = 5;
+let START_NODE_COL = 15;
+let FINISH_NODE_ROW = 10;
+let FINISH_NODE_COL = 35;
 
 export default class PathFinder extends Component {
     constructor(){
@@ -16,8 +16,9 @@ export default class PathFinder extends Component {
             mouseIsPressed: false,
             erase: false,
             clear: false,
-            dist:0
-            
+            dist:0,
+            startPos: false,
+            finishPos: false,
         }
     }
 
@@ -28,7 +29,27 @@ export default class PathFinder extends Component {
     }
 
     handleMouseDown(row, col) {
-        if(this.state.erase && this.state.grid[row][col].isWall){
+        if(this.state.startPos){
+            const oldRow = START_NODE_ROW
+            const oldCol = START_NODE_COL
+            const node = this.state.grid[row][col]
+            node.isStart = true
+            this.state.grid[row][col] = node
+            this.state.grid[oldRow][oldCol].isStart = false
+            START_NODE_COL = col
+            START_NODE_ROW = row
+        }
+        else if(this.state.finishPos){
+            const oldRow = FINISH_NODE_ROW
+            const oldCol = FINISH_NODE_COL
+            const node = this.state.grid[row][col]
+            node.isFinish = true
+            this.state.grid[row][col] = node
+            this.state.grid[oldRow][oldCol].isFinish = false
+            FINISH_NODE_COL = col
+            FINISH_NODE_ROW = row
+        }
+        else if(this.state.erase && this.state.grid[row][col].isWall){
             const newGrid = getWallToggledGrid(this.state.grid, row, col,this.state.erase)
             this.setState({grid: newGrid, mouseIsPressed: true})
         }
@@ -107,6 +128,14 @@ export default class PathFinder extends Component {
         this.setState({erase: !this.state.erase})
     }
 
+    startPosition() {
+        this.setState({startPos: !this.state.startPos})
+    }
+
+    finishPosition() {
+        this.setState({finishPos: !this.state.finishPos})
+    }
+
     render() {
         const {grid} = this.state
         return (
@@ -121,7 +150,12 @@ export default class PathFinder extends Component {
                     <form action="http://localhost:3000/">
                         <button className='button'> Clear Grid </button>    
                     </form>
-                    
+                    <button className = 'button' onClick={() => this.startPosition()}>
+                        Move starting point
+                    </button>
+                    <button className = 'button' onClick={() => this.finishPosition()}>
+                        Move ending point
+                    </button>
                 </navbar>
                 <br></br> <br></br> <br></br>
                 <div className = 'gridline'>
