@@ -108,19 +108,19 @@ export default class PathFinder extends Component {
         this.setState({mouseIsPressed: false})
     }
 
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,prevArray=[]) {
         //Set Distance value to Visualizing
         this.setState({dist:"Visualizing..."})
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
             //animate visited nodes : Refer to Node.css for animation details
           if (i === visitedNodesInOrder.length) {
             setTimeout(() => {
-              this.animateShortestPath(nodesInShortestPathOrder);
+              this.animateShortestPath(nodesInShortestPathOrder,prevArray);
             }, 10 * i);
             return;
           }
           //Do not animate start point and destination point
-          if(visitedNodesInOrder[i].isStart || visitedNodesInOrder[i].isFinish || visitedNodesInOrder[i].isFinish2) continue
+          if(visitedNodesInOrder[i].isStart || visitedNodesInOrder[i].isFinish || visitedNodesInOrder[i].isFinish2 || prevArray.includes(nodesInShortestPathOrder[i])) continue
           setTimeout(() => {
             const node = visitedNodesInOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -130,11 +130,11 @@ export default class PathFinder extends Component {
         
     }
     
-    animateShortestPath(nodesInShortestPathOrder) {
+    animateShortestPath(nodesInShortestPathOrder,prevArray) {
         //animate shortest path : Refer to Node.css for animation details
         for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
             //Do not animate start point and destination point
-            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish||nodesInShortestPathOrder[i].isFinish2) continue  
+            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish||nodesInShortestPathOrder[i].isFinish2 || prevArray.includes(nodesInShortestPathOrder[i])) continue  
           setTimeout(() => {
             const node = nodesInShortestPathOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -162,7 +162,7 @@ export default class PathFinder extends Component {
         const visitedNodesInOrder2 = dijkstra(grid,fin,fin2);
         const nodesInShortestPathOrder2 = getNodesInShortestPathOrder(fin2);
         setTimeout(()=> {
-            this.animateDijkstra(visitedNodesInOrder2,nodesInShortestPathOrder2);   
+            this.animateDijkstra(visitedNodesInOrder2,nodesInShortestPathOrder2,nodesInShortestPathOrder);   
         },5000);
         //enough gap between the two visualizations
         this.setState({dist:dist1 + calcDistance(nodesInShortestPathOrder2)});
