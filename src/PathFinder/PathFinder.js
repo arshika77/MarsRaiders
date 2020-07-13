@@ -2,12 +2,16 @@ import React, { Component } from 'react'
 import Node from './Node/Node'
 import {dijkstra, getNodesInShortestPathOrder, calcDistance} from '../algorithms/dijkstra'
 import './PathFinder.css'
+import { euclidean } from './Heuristics';
 
 //Define the initial starting point and the initial destination point of the rover
 let START_NODE_ROW = 5;
 let START_NODE_COL = 15;
 let FINISH_NODE_ROW = 10;
 let FINISH_NODE_COL = 35;
+let FINISH2_NODE_ROW = 12;
+let FINISH2_NODE_COL = 40;
+
 
 export default class PathFinder extends Component {
     constructor(){
@@ -20,6 +24,7 @@ export default class PathFinder extends Component {
             dist:0,
             startPos: false,
             finishPos: false,
+            finishPos2: false,
         }
     }
 
@@ -51,6 +56,17 @@ export default class PathFinder extends Component {
             this.state.grid[oldRow][oldCol].isFinish = false
             FINISH_NODE_COL = col
             FINISH_NODE_ROW = row
+        }
+
+        else if(this.state.finishPos2){
+            const oldRow = FINISH2_NODE_ROW
+            const oldCol = FINISH2_NODE_COL
+            const node = this.state.grid[row][col]
+            node.isFinish2 = true
+            this.state.grid[row][col] = node
+            this.state.grid[oldRow][oldCol].isFinish2 = false
+            FINISH2_NODE_COL = col
+            FINISH2_NODE_ROW = row
         }
         //When <button> Erase Walls </button> is pressed and current node is a wall
         else if(this.state.erase && this.state.grid[row][col].isWall){
@@ -104,7 +120,7 @@ export default class PathFinder extends Component {
             return;
           }
           //Do not animate start point and destination point
-          if(visitedNodesInOrder[i].isStart || visitedNodesInOrder[i].isFinish) continue
+          if(visitedNodesInOrder[i].isStart || visitedNodesInOrder[i].isFinish || visitedNodesInOrder[i].isFinish2) continue
           setTimeout(() => {
             const node = visitedNodesInOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -118,7 +134,7 @@ export default class PathFinder extends Component {
         //animate shortest path : Refer to Node.css for animation details
         for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
             //Do not animate start point and destination point
-            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish) continue  
+            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish||nodesInShortestPathOrder[i].isFinish2) continue  
           setTimeout(() => {
             const node = nodesInShortestPathOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -126,7 +142,7 @@ export default class PathFinder extends Component {
           }, 50 * i);
         }
         // Set Distance value to distance between start point and destination point
-        this.setState({dist:calcDistance(nodesInShortestPathOrder)});
+        this.setState({dist: calcDistance(nodesInShortestPathOrder)});
     }
     
     
@@ -136,9 +152,21 @@ export default class PathFinder extends Component {
         const {grid} = this.state;
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-        const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-        const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);   
+        const finishNode2 = grid[FINISH2_NODE_ROW][FINISH2_NODE_COL];
+        const fin = euclidean(FINISH_NODE_COL-START_NODE_ROW,FINISH_NODE_ROW-START_NODE_ROW)<euclidean(FINISH2_NODE_COL-START_NODE_ROW,FINISH2_NODE_ROW-START_NODE_ROW)? finishNode : finishNode2 ;
+        const fin2 = euclidean(FINISH_NODE_COL-START_NODE_ROW,FINISH_NODE_ROW-START_NODE_ROW)>=euclidean(FINISH2_NODE_COL-START_NODE_ROW,FINISH2_NODE_ROW-START_NODE_ROW)? finishNode : finishNode2 ;
+        const visitedNodesInOrder = dijkstra(grid, startNode, fin);
+        const nodesInShortestPathOrder = getNodesInShortestPathOrder(fin);
+        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+        let dist1 = this.dist;
+        const visitedNodesInOrder2 = dijkstra(grid,fin,fin2);
+        const nodesInShortestPathOrder2 = getNodesInShortestPathOrder(fin2);
+        setTimeout(()=> {
+            this.animateDijkstra(visitedNodesInOrder2,nodesInShortestPathOrder2);   
+        },5000);
+        //enough gap between the two visualizations
+        this.setState({dist:dist1 + calcDistance(nodesInShortestPathOrder2)});
+        
     }
 
     eraseWalls() {
@@ -156,6 +184,11 @@ export default class PathFinder extends Component {
         this.setState({finishPos: !this.state.finishPos})
     }
 
+    finishPosition2() {
+        //Toggle finishPos2 state on button press
+        this.setState({finishPos2: !this.state.finishPos2})
+    }
+
     render() {
         const {grid} = this.state
         return (
@@ -170,6 +203,10 @@ export default class PathFinder extends Component {
                     <button className = 'button' onClick={() => this.finishPosition()}>
                         { this.state.finishPos ? "Fix destination point" : "Move destination point"}
                     </button>
+                    <button className = 'button' onClick={() => this.finishPosition2()}>
+                        { this.state.finishPos2 ? "Fix 2nd destination point" : "Move 2nd destination point"}
+                    </button>
+                    
                     <button className='button' onClick = { () =>  this.eraseWalls()}>
                         { this.state.erase? "Stop Erasing" : "Erase Walls"}
                     </button>
@@ -185,13 +222,14 @@ export default class PathFinder extends Component {
                         return (
                         <div key={rowIdx}> 
                             {row.map((node,nodeIdx) => {
-                                const {row, col, isFinish, isStart, isWall} = node
+                                const {row, col, isFinish,isFinish2, isStart, isWall} = node
                                 return (
                                     <Node 
                                         key = {nodeIdx}
                                         col = {col}
                                         row = {row}
                                         isFinish = {isFinish}
+                                        isFinish2 = {isFinish2}
                                         isStart = {isStart}
                                         isWall = {isWall}
                                         mouseIsPressed={this.state.mouseIsPressed}
@@ -241,6 +279,7 @@ const createNode = (col,row) => {
         row,
         isStart: row === START_NODE_ROW && col === START_NODE_COL,
         isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
+        isFinish2: row === FINISH2_NODE_ROW && col=== FINISH2_NODE_COL,
         distance: Infinity,
         isVisited: false,
         isWall: false,
