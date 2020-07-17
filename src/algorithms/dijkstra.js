@@ -1,7 +1,7 @@
 import React from 'react'
 import { euclidean, manhattan } from '../PathFinder/Heuristics'
 
-export function dijkstra(grid, startNode, finishNode,finishNode2) {
+export function dijkstra(grid, startNode, finishNode) {
     const visitedNodesInOrder = []
     startNode.distance = 0
     const unvisitedNodes = getAllNodes(grid)
@@ -66,7 +66,7 @@ export function calcDistance(nodesInShortestPathOrder){
     dx = nodesInShortestPathOrder[i].col - nodesInShortestPathOrder[i-1].col;
     sum+= manhattan(dx,dy);
   }
-  return (sum!=0) ? sum : "No possible path";
+  return (sum!==0) ? sum : "No possible path";
   
   
 }

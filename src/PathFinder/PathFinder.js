@@ -57,7 +57,7 @@ export default class PathFinder extends Component {
             FINISH_NODE_COL = col
             FINISH_NODE_ROW = row
         }
-
+        //When <button> Move 2nd destination point </button> is clicked
         else if(this.state.finishPos2){
             const oldRow = FINISH2_NODE_ROW
             const oldCol = FINISH2_NODE_COL
@@ -108,19 +108,19 @@ export default class PathFinder extends Component {
         this.setState({mouseIsPressed: false})
     }
 
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,prevArray=[]) {
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder, visitedNodesInOrder2, nodesInShortestPathOrder2) {
         //Set Distance value to Visualizing
         this.setState({dist:"Visualizing..."})
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
             //animate visited nodes : Refer to Node.css for animation details
           if (i === visitedNodesInOrder.length) {
             setTimeout(() => {
-              this.animateShortestPath(nodesInShortestPathOrder,prevArray);
+              this.animateShortestPath(nodesInShortestPathOrder, nodesInShortestPathOrder2 , visitedNodesInOrder2);
             }, 10 * i);
             return;
           }
           //Do not animate start point and destination point
-          if(visitedNodesInOrder[i].isStart || visitedNodesInOrder[i].isFinish || visitedNodesInOrder[i].isFinish2 || prevArray.includes(nodesInShortestPathOrder[i])) continue
+          if(visitedNodesInOrder[i].isStart || visitedNodesInOrder[i].isFinish || visitedNodesInOrder[i].isFinish2 ) continue
           setTimeout(() => {
             const node = visitedNodesInOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -129,12 +129,38 @@ export default class PathFinder extends Component {
         }
         
     }
+
+    animateDijkstra2(visitedNodesInOrder2,nodesInShortestPathOrder2, nodesInShortestPathOrder,dist1) {
+        // let dist1 = this.dist;
+        this.setState({dist:"Visualizing..."})
+        for (let i = 0; i <= visitedNodesInOrder2.length; i++) {
+            //animate visited nodes : Refer to Node.css for animation details
+          if (i === visitedNodesInOrder2.length) {
+            setTimeout(() => {
+              this.animateShortestPath2(nodesInShortestPathOrder2, nodesInShortestPathOrder,dist1);
+            }, 10 * i);
+            return;
+          }
+          //Do not animate start point and destination point
+          for (let j = 0; j<= nodesInShortestPathOrder.length; j++) {
+              if (visitedNodesInOrder2[i]===nodesInShortestPathOrder[j]) continue;
+          }
+          if(visitedNodesInOrder2[i].isStart || visitedNodesInOrder2[i].isFinish || visitedNodesInOrder2[i].isFinish2 ) continue
+          setTimeout(() => {
+            const node = visitedNodesInOrder2[i];
+            document.getElementById(`node-${node.row}-${node.col}`).className =
+              'node node-visited2';
+          }, 10 * i);
+        }
+
+    }
+
     
-    animateShortestPath(nodesInShortestPathOrder,prevArray) {
+    animateShortestPath(nodesInShortestPathOrder, nodesInShortestPathOrder2, visitedNodesInOrder2) {
         //animate shortest path : Refer to Node.css for animation details
         for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
             //Do not animate start point and destination point
-            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish||nodesInShortestPathOrder[i].isFinish2 || prevArray.includes(nodesInShortestPathOrder[i])) continue  
+            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish||nodesInShortestPathOrder[i].isFinish2) continue  
           setTimeout(() => {
             const node = nodesInShortestPathOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className =
@@ -142,7 +168,30 @@ export default class PathFinder extends Component {
           }, 50 * i);
         }
         // Set Distance value to distance between start point and destination point
+        let dist1 = calcDistance(nodesInShortestPathOrder)
         this.setState({dist: calcDistance(nodesInShortestPathOrder)});
+        if (dist1 != "No possible path") this.animateDijkstra2(visitedNodesInOrder2,nodesInShortestPathOrder2,nodesInShortestPathOrder,dist1)
+    }
+
+    animateShortestPath2(nodesInShortestPathOrder2, nodesInShortestPathOrder, dist1) {
+        //animate shortest path : Refer to Node.css for animation details
+        for (let i = 0; i < nodesInShortestPathOrder2.length; i++) {
+            for (let j = 0; j<= nodesInShortestPathOrder.length; j++) {
+                if (nodesInShortestPathOrder2[i]===nodesInShortestPathOrder[j]) continue;
+            }
+            //Do not animate start point and destination point
+            if(nodesInShortestPathOrder2[i].isStart || nodesInShortestPathOrder2[i].isFinish||nodesInShortestPathOrder2[i].isFinish2 ) continue  
+          setTimeout(() => {
+            const node = nodesInShortestPathOrder2[i];
+            document.getElementById(`node-${node.row}-${node.col}`).className =
+              'node node-shortest-path2';
+          }, 50 * i);
+        }
+        // Set Distance value to distance between start point and destination point
+        let dist2 = calcDistance(nodesInShortestPathOrder2)
+        if (dist1 == "No possible path") this.setState({dist: "No possible path"})
+        else if (dist2 == "No possible path") this.setState({dist: "No possible path"})
+        else this.setState({dist: dist1 + dist2 -1});
     }
     
     
@@ -156,16 +205,16 @@ export default class PathFinder extends Component {
         const fin = euclidean(FINISH_NODE_COL-START_NODE_ROW,FINISH_NODE_ROW-START_NODE_ROW)<euclidean(FINISH2_NODE_COL-START_NODE_ROW,FINISH2_NODE_ROW-START_NODE_ROW)? finishNode : finishNode2 ;
         const fin2 = euclidean(FINISH_NODE_COL-START_NODE_ROW,FINISH_NODE_ROW-START_NODE_ROW)>=euclidean(FINISH2_NODE_COL-START_NODE_ROW,FINISH2_NODE_ROW-START_NODE_ROW)? finishNode : finishNode2 ;
         const visitedNodesInOrder = dijkstra(grid, startNode, fin);
-        const nodesInShortestPathOrder = getNodesInShortestPathOrder(fin);
-        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-        let dist1 = this.dist;
         const visitedNodesInOrder2 = dijkstra(grid,fin,fin2);
+        const nodesInShortestPathOrder = getNodesInShortestPathOrder(fin);
         const nodesInShortestPathOrder2 = getNodesInShortestPathOrder(fin2);
-        setTimeout(()=> {
-            this.animateDijkstra(visitedNodesInOrder2,nodesInShortestPathOrder2,nodesInShortestPathOrder);   
-        },5000);
+        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder, visitedNodesInOrder2, nodesInShortestPathOrder2);
+        
+        //const visitedNodesInOrder2 = dijkstra(grid,fin,fin2);
+        //const nodesInShortestPathOrder2 = getNodesInShortestPathOrder(fin2);
+        
         //enough gap between the two visualizations
-        this.setState({dist:dist1 + calcDistance(nodesInShortestPathOrder2)});
+        //this.setState({dist: dist1 + calcDistance(nodesInShortestPathOrder2)});
         
     }
 
