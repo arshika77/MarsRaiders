@@ -2,13 +2,16 @@ import React, { Component } from 'react'
 import Node from './Node/Node'
 import {dijkstra, getNodesInShortestPathOrder, calcDistance} from '../algorithms/dijkstra'
 import './PathFinder.css'
-
+import { euclidean, manhattan } from './Heuristics';
 
 //Define the initial starting point and the initial destination point of the rover
 let START_NODE_ROW = 5;
 let START_NODE_COL = 15;
-let FINISH_NODE_ROW = 10;
-let FINISH_NODE_COL = 35;
+let FINISH_NODE_ROW = 7;
+let FINISH_NODE_COL = 20;
+let FINISH2_NODE_ROW = 9;
+let FINISH2_NODE_COL = 25;
+
 
 export default class PathFinder extends Component {
     constructor(){
@@ -21,6 +24,7 @@ export default class PathFinder extends Component {
             dist:0,
             startPos: false,
             finishPos: false,
+            finishPos2: false,
         }
     }
 
@@ -52,6 +56,17 @@ export default class PathFinder extends Component {
             this.state.grid[oldRow][oldCol].isFinish = false
             FINISH_NODE_COL = col
             FINISH_NODE_ROW = row
+        }
+
+        else if(this.state.finishPos2){
+            const oldRow = FINISH2_NODE_ROW
+            const oldCol = FINISH2_NODE_COL
+            const node = this.state.grid[row][col]
+            node.isFinish2 = true
+            this.state.grid[row][col] = node
+            this.state.grid[oldRow][oldCol].isFinish2 = false
+            FINISH2_NODE_COL = col
+            FINISH2_NODE_ROW = row
         }
         //When <button> Erase Walls </button> is pressed and current node is a wall
         else if(this.state.erase && this.state.grid[row][col].isWall){
@@ -93,41 +108,45 @@ export default class PathFinder extends Component {
         this.setState({mouseIsPressed: false})
     }
 
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2) {
         //Set Distance value to Visualizing
         this.setState({dist:"Visualizing..."})
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
             //animate visited nodes : Refer to Node.css for animation details
           if (i === visitedNodesInOrder.length) {
             setTimeout(() => {
-              this.animateShortestPath(nodesInShortestPathOrder);
+              this.animateShortestPath(nodesInShortestPathOrder,nodesInShortestPathOrder2);
             }, 10 * i);
             return;
           }
           //Do not animate start point and destination point
-          if(visitedNodesInOrder[i].isStart || visitedNodesInOrder[i].isFinish) continue
+          if(visitedNodesInOrder[i].isStart || visitedNodesInOrder[i].isFinish || visitedNodesInOrder[i].isFinish2) continue
           setTimeout(() => {
             const node = visitedNodesInOrder[i];
-            document.getElementById(`node-${node.row}-${node.col}`).className =
-              'node node-visited';
+            document.getElementById(`node-${node.row}-${node.col}`).className ='node node-visited';
           }, 10 * i);
         }
         
     }
     
-    animateShortestPath(nodesInShortestPathOrder) {
+    animateShortestPath(nodesInShortestPathOrder,nodesInShortestPathOrder2) {
         //animate shortest path : Refer to Node.css for animation details
+        
+        var dist1 = nodesInShortestPathOrder.length;
+        for(let i=0;i<nodesInShortestPathOrder2.length;i++){
+            nodesInShortestPathOrder.push(nodesInShortestPathOrder2[i]);
+        }
         for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
             //Do not animate start point and destination point
-            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish) continue  
+            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish || nodesInShortestPathOrder[i].isFinish2) continue  
           setTimeout(() => {
             const node = nodesInShortestPathOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className =
               'node node-shortest-path';
           }, 50 * i);
         }
-        // Set Distance value to distance between start point and destination point
-        this.setState({dist:calcDistance(nodesInShortestPathOrder)});
+        this.setState({dist:dist1 + nodesInShortestPathOrder2.length-2});
+       
     }
     
     
@@ -135,11 +154,46 @@ export default class PathFinder extends Component {
     visualizeDijkstra() {
         //Start Visualization
         const {grid} = this.state;
-        const startNode = grid[START_NODE_ROW][START_NODE_COL];
-        const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-        const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-        const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);   
+
+        var startNode = grid[START_NODE_ROW][START_NODE_COL];
+        var finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+        var finishNode2 = grid[FINISH2_NODE_ROW][FINISH2_NODE_COL];
+        if(manhattan(finishNode2.col-startNode.col,finishNode2.row-startNode.row)>manhattan(finishNode.col-startNode.col,finishNode.row-startNode.row)){
+            var far=finishNode2;
+            var near = finishNode;
+        }
+        else{
+            var far=finishNode;
+            var near = finishNode2;
+        }
+        var visitedNodesInOrder = dijkstra(grid, startNode,far);
+        
+        var nodesInShortestPathOrder = getNodesInShortestPathOrder(near);
+        var dist1 = nodesInShortestPathOrder.length;
+        console.log(dist1);
+        const grid2 = getGrid();
+        this.setState({grid:grid2});
+        var startNode = grid2[START_NODE_ROW][START_NODE_COL];
+        var finishNode = grid2[FINISH_NODE_ROW][FINISH_NODE_COL];
+        var finishNode2 = grid2[FINISH2_NODE_ROW][FINISH2_NODE_COL];
+        if(manhattan(finishNode2.col-startNode.col,finishNode2.row-startNode.row)>manhattan(finishNode.col-startNode.col,finishNode.row-startNode.row)){
+            var far=finishNode2;
+            var near = finishNode;
+        }
+        else{
+            var far=finishNode;
+            var near = finishNode2;
+        }
+        dijkstra(grid2,near,far);
+        //visitedNodesInOrder.concat(visitedNodesInOrder2);
+        var nodesInShortestPathOrder2 = getNodesInShortestPathOrder(far)
+        
+        //console.log(nodesInShortestPathOrder2);
+        //if(nodesInShortestPathOrder.length<nodesInShortestPathOrder2.length){
+       //     nodesInShortestPathOrder = nodesInShortestPathOrder2;
+       // }
+       this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2);
+        
     }
 
     eraseWalls() {
@@ -157,6 +211,11 @@ export default class PathFinder extends Component {
         this.setState({finishPos: !this.state.finishPos})
     }
 
+    finishPosition2() {
+        //Toggle finishPos2 state on button press
+        this.setState({finishPos2: !this.state.finishPos2})
+    }
+
     render() {
         const {grid} = this.state
         return (
@@ -165,18 +224,24 @@ export default class PathFinder extends Component {
                     <button className='button' onClick={() => this.visualizeDijkstra()}>
                         Visualize Dijkstra's Algorithm
                     </button>
-                    <button className='button' onClick = { () =>  this.eraseWalls()}>
-                        Erase Walls
-                    </button>
-                    <form action="http://localhost:3000/">
-                        <button className='button'> Clear Grid </button>    
-                    </form>
                     <button className = 'button' onClick={() => this.startPosition()}>
-                        Move starting point
+                        { this.state.startPos ? "Fix starting point" : "Move starting point"}
                     </button>
                     <button className = 'button' onClick={() => this.finishPosition()}>
-                        Move destination point
+                        { this.state.finishPos ? "Fix destination point" : "Move destination point"}
                     </button>
+                    <button className = 'button' onClick={() => this.finishPosition2()}>
+                        { this.state.finishPos2 ? "Fix 2nd destination point" : "Move 2nd destination point"}
+                    </button>
+                    
+                    <button className='button' onClick = { () =>  this.eraseWalls()}>
+                        { this.state.erase? "Stop Erasing" : "Erase Walls"}
+                    </button>
+                    <form action="http://localhost:3000/">
+                        <button className='button'> 
+                            Clear Grid 
+                        </button>    
+                    </form>
                 </navbar>
                 <br></br> <br></br> <br></br>
                 <div className = 'gridline'>
@@ -184,13 +249,14 @@ export default class PathFinder extends Component {
                         return (
                         <div key={rowIdx}> 
                             {row.map((node,nodeIdx) => {
-                                const {row, col, isFinish, isStart, isWall} = node
+                                const {row, col, isFinish,isFinish2, isStart, isWall} = node
                                 return (
                                     <Node 
                                         key = {nodeIdx}
                                         col = {col}
                                         row = {row}
                                         isFinish = {isFinish}
+                                        isFinish2 = {isFinish2}
                                         isStart = {isStart}
                                         isWall = {isWall}
                                         mouseIsPressed={this.state.mouseIsPressed}
@@ -240,6 +306,7 @@ const createNode = (col,row) => {
         row,
         isStart: row === START_NODE_ROW && col === START_NODE_COL,
         isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
+        isFinish2: row === FINISH2_NODE_ROW && col=== FINISH2_NODE_COL,
         distance: Infinity,
         isVisited: false,
         isWall: false,

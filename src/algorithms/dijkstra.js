@@ -1,6 +1,8 @@
 import React from 'react'
+import { manhattan } from '../PathFinder/Heuristics'
 
 export function dijkstra(grid, startNode, finishNode) {
+    
     const visitedNodesInOrder = []
     startNode.distance = 0
     const unvisitedNodes = getAllNodes(grid)
@@ -11,7 +13,12 @@ export function dijkstra(grid, startNode, finishNode) {
         if(closestNode.distance === Infinity) return visitedNodesInOrder
         closestNode.isVisited = true;
         visitedNodesInOrder.push(closestNode)
-        if(closestNode === finishNode) return visitedNodesInOrder
+        if(visitedNodesInOrder.includes(finishNode)){
+          //var visitedNodesInOrder2 = dijkstra2(grid,finishNode,finishNode2);
+
+          //console.log(visitedNodesInOrder2);
+          return visitedNodesInOrder
+        } 
         updateUnvisitedNeighbors(closestNode, grid)
     }
 }
@@ -27,7 +34,8 @@ function updateUnvisitedNeighbors(node, grid) {
       neighbor.previousNode = node;
     }
 }
-  
+
+
 function getUnvisitedNeighbors(node, grid) {
     const neighbors = [];
     const {col, row} = node;
@@ -42,13 +50,16 @@ function getAllNodes(grid) {
     const nodes = [];
     for (const row of grid) {
       for (const node of row) {
-        nodes.push(node);
+        if(node.isVisited===false) nodes.push(node);
       }
     }
     return nodes;
 }
+
   
 export function getNodesInShortestPathOrder(finishNode) {
+    //const nodesInVisitedPathOrder = dijkstra2(grid,finishNode,finishNode2);
+    //console.log(nodesInVisitedPathOrder);
     const nodesInShortestPathOrder = [];
     let currentNode = finishNode;
     while (currentNode !== null) {
@@ -63,7 +74,7 @@ export function calcDistance(nodesInShortestPathOrder){
   for(let i=1;i<nodesInShortestPathOrder.length;i++){
     dy = nodesInShortestPathOrder[i].row - nodesInShortestPathOrder[i-1].row;
     dx = nodesInShortestPathOrder[i].col - nodesInShortestPathOrder[i-1].col;
-    sum+= Math.sqrt(dx*dx + dy*dy);
+    sum+= manhattan(dx,dy);
   }
   return (sum!=0) ? sum : "No possible path";
   
