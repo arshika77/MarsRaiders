@@ -324,7 +324,7 @@ export default class PathFinder extends Component {
                     })}
                 </div> 
                 <div>
-                    <button className='button' style={{backgroundColor: "DarkSlateGrey"}}>
+                    <button className='buttonBottom' >
                         Distance: {this.state.dist}
                     </button>
                 </div>
