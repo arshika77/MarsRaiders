@@ -171,7 +171,7 @@ export default class PathFinder extends Component {
         //console.log(nodesInShortestPathOrder[0]);
         var nodesInShortestPathOrder2 = [];
             var grid2 = [];
-            for ( let row = 0; row < 20; row++){
+            for ( let row = 0; row < 17; row++){
                 const currentRow = [];
                 for ( let col = 0; col < 50; col++){
                     grid[row][col].distance = Infinity;
@@ -196,7 +196,7 @@ export default class PathFinder extends Component {
             //     nodesInShortestPathOrder = nodesInShortestPathOrder2;
             // }
             var grid3 = [];
-            for ( let row = 0; row < 20; row++){
+            for ( let row = 0; row < 17; row++){
                 const currentRow = [];
                 for ( let col = 0; col < 50; col++){
                     grid2[row][col].distance = Infinity;
@@ -294,7 +294,7 @@ export default class PathFinder extends Component {
                         </button>    
                     </form>
                 </navbar>
-                <br></br> <br></br> <br></br>
+                <br></br> <br></br>
                 <div className = 'gridline'>
                     {grid.map((row,rowIdx) => {
                         return (
@@ -340,7 +340,7 @@ export default class PathFinder extends Component {
 const getGrid = () => {
     //Initial grid setup
     const grid = [];
-    for ( let row = 0; row < 20; row++){
+    for ( let row = 0; row < 17; row++){
         const currentRow = [];
         for ( let col = 0; col < 50; col++){
             currentRow.push(createNode(col,row))
