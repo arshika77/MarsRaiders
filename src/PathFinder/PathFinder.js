@@ -108,14 +108,14 @@ export default class PathFinder extends Component {
         this.setState({mouseIsPressed: false})
     }
 
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2) {
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2,far) {
         //Set Distance value to Visualizing
         this.setState({dist:"Visualizing..."})
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
             //animate visited nodes : Refer to Node.css for animation details
           if (i === visitedNodesInOrder.length) {
             setTimeout(() => {
-              this.animateShortestPath(nodesInShortestPathOrder,nodesInShortestPathOrder2);
+              this.animateShortestPath(nodesInShortestPathOrder,nodesInShortestPathOrder2,far);
             }, 10 * i);
             return;
           }
@@ -129,9 +129,12 @@ export default class PathFinder extends Component {
         
     }
     
-    animateShortestPath(nodesInShortestPathOrder,nodesInShortestPathOrder2) {
+    animateShortestPath(nodesInShortestPathOrder,nodesInShortestPathOrder2,far) {
         //animate shortest path : Refer to Node.css for animation details
-        
+        if(far.previousNode===null){
+            this.setState({dist : "Path Not Possible"});
+            return;
+        }
         var dist1 = nodesInShortestPathOrder.length;
         for(let i=0;i<nodesInShortestPathOrder2.length;i++){
             nodesInShortestPathOrder.push(nodesInShortestPathOrder2[i]);
@@ -145,7 +148,12 @@ export default class PathFinder extends Component {
               'node node-shortest-path';
           }, 50 * i);
         }
-        this.setState({dist:dist1 + nodesInShortestPathOrder2.length-2});
+        if(dist1 + nodesInShortestPathOrder2.length>2){
+            this.setState({dist:dist1 + nodesInShortestPathOrder2.length-2});
+        }
+        else{
+            this.setState({dist : "Path Not Possible"});
+        }
        
     }
     
@@ -170,29 +178,43 @@ export default class PathFinder extends Component {
         
         var nodesInShortestPathOrder = getNodesInShortestPathOrder(near);
         var dist1 = nodesInShortestPathOrder.length;
-        console.log(dist1);
-        const grid2 = getGrid();
-        this.setState({grid:grid2});
-        var startNode = grid2[START_NODE_ROW][START_NODE_COL];
-        var finishNode = grid2[FINISH_NODE_ROW][FINISH_NODE_COL];
-        var finishNode2 = grid2[FINISH2_NODE_ROW][FINISH2_NODE_COL];
-        if(manhattan(finishNode2.col-startNode.col,finishNode2.row-startNode.row)>manhattan(finishNode.col-startNode.col,finishNode.row-startNode.row)){
-            var far=finishNode2;
-            var near = finishNode;
-        }
-        else{
-            var far=finishNode;
-            var near = finishNode2;
-        }
-        dijkstra(grid2,near,far);
-        //visitedNodesInOrder.concat(visitedNodesInOrder2);
-        var nodesInShortestPathOrder2 = getNodesInShortestPathOrder(far)
+        //console.log(nodesInShortestPathOrder[0]);
+        var nodesInShortestPathOrder2 = [];
+        if(near.previousNode!==null){
+            const grid2 = [];
+            for ( let row = 0; row < 20; row++){
+                const currentRow = [];
+                for ( let col = 0; col < 50; col++){
+                    grid[row][col].distance = Infinity;
+                    grid[row][col].previousNode = null;
+                    grid[row][col].isVisited = false;   
+                    currentRow.push(grid[row][col]);
+                }
+                grid2.push(currentRow)
+            }
         
-        //console.log(nodesInShortestPathOrder2);
-        //if(nodesInShortestPathOrder.length<nodesInShortestPathOrder2.length){
-       //     nodesInShortestPathOrder = nodesInShortestPathOrder2;
-       // }
-       this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2);
+            this.setState({grid:grid2});
+            var startNode = grid2[START_NODE_ROW][START_NODE_COL];
+            var finishNode = grid2[FINISH_NODE_ROW][FINISH_NODE_COL];
+            var finishNode2 = grid2[FINISH2_NODE_ROW][FINISH2_NODE_COL];
+            if(manhattan(finishNode2.col-startNode.col,finishNode2.row-startNode.row)>manhattan(finishNode.col-startNode.col,finishNode.row-startNode.row)){
+                var far=finishNode2;
+                var near = finishNode;
+            }
+            else{
+                var far=finishNode;
+                var near = finishNode2;
+            }
+            dijkstra(grid2,near,far);
+            //visitedNodesInOrder.concat(visitedNodesInOrder2);
+            var nodesInShortestPathOrder2 = getNodesInShortestPathOrder(far)
+            
+            //console.log(nodesInShortestPathOrder2);
+            //if(nodesInShortestPathOrder.length<nodesInShortestPathOrder2.length){
+            //     nodesInShortestPathOrder = nodesInShortestPathOrder2;
+            // }
+        }
+       this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2,far);
         
     }
 
