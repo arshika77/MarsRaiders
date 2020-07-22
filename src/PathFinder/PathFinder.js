@@ -129,12 +129,9 @@ export default class PathFinder extends Component {
         
     }
     
-    animateShortestPath(nodesInShortestPathOrder,nodesInShortestPathOrder2,far) {
+    animateShortestPath(nodesInShortestPathOrder,nodesInShortestPathOrder2) {
         //animate shortest path : Refer to Node.css for animation details
-        if(far.previousNode===null){
-            this.setState({dist : "Path Not Possible"});
-            return;
-        }
+        
         var dist1 = nodesInShortestPathOrder.length;
         for(let i=0;i<nodesInShortestPathOrder2.length;i++){
             nodesInShortestPathOrder.push(nodesInShortestPathOrder2[i]);
@@ -166,22 +163,14 @@ export default class PathFinder extends Component {
         var startNode = grid[START_NODE_ROW][START_NODE_COL];
         var finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
         var finishNode2 = grid[FINISH2_NODE_ROW][FINISH2_NODE_COL];
-        if(manhattan(finishNode2.col-startNode.col,finishNode2.row-startNode.row)>manhattan(finishNode.col-startNode.col,finishNode.row-startNode.row)){
-            var far=finishNode2;
-            var near = finishNode;
-        }
-        else{
-            var far=finishNode;
-            var near = finishNode2;
-        }
-        var visitedNodesInOrder = dijkstra(grid, startNode,far);
         
-        var nodesInShortestPathOrder = getNodesInShortestPathOrder(near);
+        var visitedNodesInOrder = dijkstra(grid, startNode,finishNode);
+        
+        var nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
         var dist1 = nodesInShortestPathOrder.length;
         //console.log(nodesInShortestPathOrder[0]);
         var nodesInShortestPathOrder2 = [];
-        if(near.previousNode!==null){
-            const grid2 = [];
+            var grid2 = [];
             for ( let row = 0; row < 20; row++){
                 const currentRow = [];
                 for ( let col = 0; col < 50; col++){
@@ -194,27 +183,67 @@ export default class PathFinder extends Component {
             }
         
             this.setState({grid:grid2});
-            var startNode = grid2[START_NODE_ROW][START_NODE_COL];
-            var finishNode = grid2[FINISH_NODE_ROW][FINISH_NODE_COL];
-            var finishNode2 = grid2[FINISH2_NODE_ROW][FINISH2_NODE_COL];
-            if(manhattan(finishNode2.col-startNode.col,finishNode2.row-startNode.row)>manhattan(finishNode.col-startNode.col,finishNode.row-startNode.row)){
-                var far=finishNode2;
-                var near = finishNode;
-            }
-            else{
-                var far=finishNode;
-                var near = finishNode2;
-            }
-            dijkstra(grid2,near,far);
-            //visitedNodesInOrder.concat(visitedNodesInOrder2);
-            var nodesInShortestPathOrder2 = getNodesInShortestPathOrder(far)
+            startNode = grid2[START_NODE_ROW][START_NODE_COL];
+            finishNode = grid2[FINISH_NODE_ROW][FINISH_NODE_COL];
+            finishNode2 = grid2[FINISH2_NODE_ROW][FINISH2_NODE_COL];
+            
+            var visitedNodesInOrder2 = dijkstra(grid2,finishNode,finishNode2);
+           
+            var nodesInShortestPathOrder2 = getNodesInShortestPathOrder(finishNode2)
             
             //console.log(nodesInShortestPathOrder2);
             //if(nodesInShortestPathOrder.length<nodesInShortestPathOrder2.length){
             //     nodesInShortestPathOrder = nodesInShortestPathOrder2;
             // }
-        }
-       this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2,far);
+            var grid3 = [];
+            for ( let row = 0; row < 20; row++){
+                const currentRow = [];
+                for ( let col = 0; col < 50; col++){
+                    grid2[row][col].distance = Infinity;
+                    grid2[row][col].previousNode = null;
+                    grid2[row][col].isVisited = false;   
+                    currentRow.push(grid2[row][col]);
+                }
+                grid3.push(currentRow)
+            }
+        
+            this.setState({grid:grid3});
+            startNode = grid3[START_NODE_ROW][START_NODE_COL];
+            finishNode = grid3[FINISH_NODE_ROW][FINISH_NODE_COL];
+            finishNode2 = grid3[FINISH2_NODE_ROW][FINISH2_NODE_COL];
+            
+            var visitedNodesInOrder3 = dijkstra(grid3,startNode,finishNode2);
+           
+            var nodesInShortestPathOrder3 = getNodesInShortestPathOrder(finishNode2);
+            //console.log(nodesInShortestPathOrder3[1]);
+
+            var far = finishNode2;
+            if(nodesInShortestPathOrder3.length < nodesInShortestPathOrder.length){
+               // visitedNodesInOrder = visitedNodesInOrder3;
+              //  nodesInShortestPathOrder = nodesInShortestPathOrder3;
+                nodesInShortestPathOrder2.reverse();
+                //far = finishNode;
+                if(finishNode2.previousNode!==null){ 
+                       for(let i=0;i<visitedNodesInOrder2.length;i++){
+                        visitedNodesInOrder3.push(visitedNodesInOrder2[i]);
+                    }
+                }
+                else{
+                    nodesInShortestPathOrder2=[];
+                }
+                this.animateDijkstra(visitedNodesInOrder3, nodesInShortestPathOrder3,nodesInShortestPathOrder2);
+                return;
+            }
+            if(finishNode.previousNode!==null){
+                for(let i=0;i<visitedNodesInOrder2.length;i++){
+                    visitedNodesInOrder.push(visitedNodesInOrder2[i]);
+                }
+            }
+            else{
+                nodesInShortestPathOrder2=[];
+            }
+
+       this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2);
         
     }
 
