@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Popup from "reactjs-popup"
 import Node from './Node/Node'
 import {dijkstra, getNodesInShortestPathOrder, calcDistance} from '../algorithms/dijkstra'
 //import {findCommonElements, findElement} from './commonNodes.js'
@@ -25,6 +26,7 @@ export default class PathFinder extends Component {
             finishPos: false,
             finishPos2: false,
             disable: false,
+            seen: false,
         }
     }
 
@@ -346,16 +348,42 @@ export default class PathFinder extends Component {
                             </button>
                         </li>
                         <li>
-                            <button className= 'button'>
-                                Instructions
-                            </button>
-                        </li>
-                        <li>
                             <form action="http://localhost:3000/">
                                 <button className='button'> 
                                     Reset Grid 
                                 </button>    
                             </form>
+                        </li>
+                        <li>
+                            <Popup
+                                modal trigger = {
+                                    <button className= 'button' id= 'helpbtn'>
+                                    Instructions
+                                    </button> 
+                                }  
+                                closeOnDocumentClick
+                                className = 'Popup'
+                            >
+                                <h1> Welcome to the MARS ROVER Navigator! </h1>
+                                <h3> The Mars Curiosity Rover needs to examine two sites for soil samples, labelled Destination Point A and Destination Point B. It must do so while avoiding deathly obstacles and in the shortest path possible! </h3>
+                                <hr></hr>
+                                <b> <i> (Click anywhere to close the HELP window) </i> </b> <br></br> <br></br>
+                                To run the MARS ROVER Navigator: <br></br> <br></br>
+                                <ol>
+                                    <li> 1. Fix the starting point of the rover </li> <br></br>
+                                    <li> 2. Fix the two destination points of the rover </li> <br></br>
+                                    <li> 3. Draw the necessary obstacles (walls) on the grid </li> <br></br>
+                                    <li> 4. In case you make an error, use the "Erase Walls" button to make corrections or press "Reset Grid" to start afresh </li> <br></br>
+                                    <li> 5. Once the simulated terrain is ready, choose the appropriate Shortest Path Algorithm and the corresponding Heuristic for the robot to implement</li> <br></br>
+                                    <li> 6. Voila! The MARS ROVER Navigator will visualise the shortest path of the robot and display the distance</li> <br></br>
+                                    <li> 7. To start another visualisation, click on "Reset Grid" </li> <br></br>
+                                </ol>
+                                <br></br>
+                                <footer>
+                                    To view the source code, take a look at the <a href= 'https://github.com/arshika77/MarsRaiders'> github repository </a> of the project
+                                </footer>
+                                <br></br> <br></br>
+                            </Popup>
                         </li>
                     </ul>
                 </navbar>
