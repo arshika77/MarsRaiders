@@ -1,9 +1,9 @@
 import React from 'react'
-import { manhattan } from '../PathFinder/Heuristics'
+import { manhattan, euclidean } from '../PathFinder/Heuristics'
 
-export function dijkstra(grid, startNode, finishNode) {
+export function dijkstra(grid, startNode, finishNode,heuristic) {
     
-    const visitedNodesInOrder = []
+    const visitedNodesInOrder = []  
     startNode.distance = 0
     const unvisitedNodes = getAllNodes(grid)
     while (! !unvisitedNodes.length){
@@ -19,7 +19,7 @@ export function dijkstra(grid, startNode, finishNode) {
           //console.log(visitedNodesInOrder2);
           return visitedNodesInOrder
         } 
-        updateUnvisitedNeighbors(closestNode, grid)
+        updateUnvisitedNeighbors(closestNode,finishNode, grid,heuristic)
     }
 }
 
@@ -27,10 +27,15 @@ function sortNodesByDistance(unvisitedNodes) {
     unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
   }
   
-function updateUnvisitedNeighbors(node, grid) {
+function updateUnvisitedNeighbors(node,finishNode, grid,heuristic) {
     const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
     for (const neighbor of unvisitedNeighbors) {
-      neighbor.distance = node.distance + 1;
+      if(heuristic===null){
+        neighbor.distance = node.distance + 1;
+      }
+      else if(heuristic==='euclidean'){
+        neighbor.distance = node.distance + 1 + euclidean(finishNode.col-node.col,finishNode.row-node.row);
+      }
       neighbor.previousNode = node;
     }
 }
