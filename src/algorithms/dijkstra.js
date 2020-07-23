@@ -1,5 +1,5 @@
 import React from 'react'
-import { manhattan, euclidean } from '../PathFinder/Heuristics'
+import { manhattan, euclidean, chebyshev } from '../PathFinder/Heuristics'
 
 export function dijkstra(grid, startNode, finishNode,algorithm,heuristic) {
     
@@ -32,7 +32,7 @@ function sortNodesByDistance(unvisitedNodes) {
 function updateUnvisitedNeighbors(node,finishNode, grid,algorithm,heuristic) {
     const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
     for (const neighbor of unvisitedNeighbors) {
-      if(algorithm==="dijkstra"){
+      if(algorithm==='dijkstra'){
         neighbor.distance = node.distance + 1;
       }
       else if(algorithm==='astar' && heuristic==='euclidean'){
@@ -41,12 +41,19 @@ function updateUnvisitedNeighbors(node,finishNode, grid,algorithm,heuristic) {
       else if(algorithm==='astar' && heuristic==='manhattan'){
         neighbor.distance = node.distance + 1 + manhattan(finishNode.col-node.col,finishNode.row-node.row);
       }
+      else if(algorithm==='astar' && heuristic==='chebyshev'){
+        neighbor.distance = node.distance + 1 + chebyshev(finishNode.col-node.col,finishNode.row-node.row);
+      }
       else if(algorithm==='bestfirst' && heuristic==='euclidean'){
         neighbor.distance = node.distance + 1 + 100000*euclidean(finishNode.col-node.col,finishNode.row-node.row);
       
       }
       else if(algorithm==='bestfirst' && heuristic==='manhattan'){
         neighbor.distance = node.distance + 1 + 100000*manhattan(finishNode.col-node.col,finishNode.row-node.row);
+      
+      }
+      else if(algorithm==='bestfirst' && heuristic==='chebyshev'){
+        neighbor.distance = node.distance + 1 + 100000*chebyshev(finishNode.col-node.col,finishNode.row-node.row);
       
       }
       neighbor.previousNode = node;

@@ -124,7 +124,7 @@ export default class PathFinder extends Component {
           setTimeout(() => {
             const node = visitedNodesInOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className ='node node-visited';
-          }, 10 * i);
+          }, 5* i);
         }
         
     }
@@ -188,7 +188,7 @@ export default class PathFinder extends Component {
         console.log(nodesInShortestPathOrder);
         var nodesInShortestPathOrder2 = [];
             var grid2 = [];
-            for ( let row = 0; row < 16; row++){
+            for ( let row = 0; row < 15; row++){
                 const currentRow = [];
                 for ( let col = 0; col < 50; col++){
                     grid[row][col].distance = Infinity;
@@ -213,7 +213,7 @@ export default class PathFinder extends Component {
             //     nodesInShortestPathOrder = nodesInShortestPathOrder2;
             // }
             var grid3 = [];
-            for ( let row = 0; row < 16; row++){
+            for ( let row = 0; row < 15; row++){
                 const currentRow = [];
                 for ( let col = 0; col < 50; col++){
                     grid2[row][col].distance = Infinity;
@@ -239,6 +239,7 @@ export default class PathFinder extends Component {
                // visitedNodesInOrder = visitedNodesInOrder3;
               //  nodesInShortestPathOrder = nodesInShortestPathOrder3;
                 nodesInShortestPathOrder2.reverse();
+                visitedNodesInOrder2.reverse();
                 //far = finishNode;
                 if(finishNode.previousNode!==null || finishNode2.previousNode!==null){ 
                        for(let i=0;i<visitedNodesInOrder2.length;i++){
@@ -247,7 +248,10 @@ export default class PathFinder extends Component {
                 }
                 else{
                     nodesInShortestPathOrder2=[];
+                    //visitedNodesInOrder2=[];
                 }
+                this.setState({disable: true})
+       
                 this.animateDijkstra(visitedNodesInOrder3, nodesInShortestPathOrder3,nodesInShortestPathOrder2);
                 return;
             }
@@ -260,95 +264,9 @@ export default class PathFinder extends Component {
                 nodesInShortestPathOrder2=[];
             }
 
-       this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2);
-
-        
-
-       /* else if (algorithm === "astar") {
-            var AStarvisitedNodesInOrder = AstarSearch(grid, startNode,finishNode,heuristic);
-        
-            var AstarnodesInShortestPathOrder = AStargetNodesInShortestPathOrder(finishNode);
-            var AStarDist1 = AstarnodesInShortestPathOrder.length;
-            //console.log(nodesInShortestPathOrder[0]);
-            var AstarnodesInShortestPathOrder2 = [];
-                var AStargrid2 = [];
-                for ( let row = 0; row < 17; row++){
-                    const currentRow = [];
-                    for ( let col = 0; col < 50; col++){
-                        grid[row][col].distance = Infinity;
-                        grid[row][col].totalDistance = Infinity;
-                        grid[row][col].heuristicDistance = null;
-                        grid[row][col].previousNode = null;
-                        grid[row][col].isVisited = false;   
-                        currentRow.push(grid[row][col]);
-                    }
-                    AStargrid2.push(currentRow)
-                }
-            
-                this.setState({grid:AStargrid2});
-                startNode = AStargrid2[START_NODE_ROW][START_NODE_COL];
-                finishNode = AStargrid2[FINISH_NODE_ROW][FINISH_NODE_COL];
-                finishNode2 = AStargrid2[FINISH2_NODE_ROW][FINISH2_NODE_COL];
-                
-                var AStarvisitedNodesInOrder2 = AstarSearch(AStargrid2,finishNode,finishNode2,heuristic);
-            
-                var AStarnodesInShortestPathOrder2 = AStargetNodesInShortestPathOrder(finishNode2)
-                
-                //console.log(nodesInShortestPathOrder2);
-                //if(nodesInShortestPathOrder.length<nodesInShortestPathOrder2.length){
-                //     nodesInShortestPathOrder = nodesInShortestPathOrder2;
-                // }
-                var AStargrid3 = [];
-                for ( let row = 0; row < 17; row++){
-                    const currentRow = [];
-                    for ( let col = 0; col < 50; col++){
-                        AStargrid2[row][col].distance = Infinity;
-                        AStargrid2[row][col].previousNode = null;
-                        AStargrid2[row][col].isVisited = false;   
-                        currentRow.push(grid2[row][col]);
-                    }
-                    AStargrid3.push(currentRow)
-                }
-            
-                this.setState({grid:AStargrid3});
-                startNode = AStargrid3[START_NODE_ROW][START_NODE_COL];
-                finishNode = AStargrid3[FINISH_NODE_ROW][FINISH_NODE_COL];
-                finishNode2 = AStargrid3[FINISH2_NODE_ROW][FINISH2_NODE_COL];
-                
-                var AStarvisitedNodesInOrder3 = AstarSearch(grid3,startNode,finishNode2,heuristic);
-            
-                var AStarnodesInShortestPathOrder3 = AStargetNodesInShortestPathOrder(finishNode2);
-                //console.log(nodesInShortestPathOrder3[1]);
-
-                var AStarfar = finishNode2;
-                if(AStarnodesInShortestPathOrder3.length < AstarnodesInShortestPathOrder.length){
-                // visitedNodesInOrder = visitedNodesInOrder3;
-                //  nodesInShortestPathOrder = nodesInShortestPathOrder3;
-                    AStarnodesInShortestPathOrder2.reverse();
-                    //far = finishNode;
-                    if(finishNode2.previousNode!==null){ 
-                        for(let i=0;i<AStarvisitedNodesInOrder2.length;i++){
-                            AStarvisitedNodesInOrder3.push(AStarvisitedNodesInOrder2[i]);
-                        }
-                    }
-                    else{
-                        AStarnodesInShortestPathOrder2=[];
-                    }
-                    this.animateDijkstra(AStarvisitedNodesInOrder3, AStarnodesInShortestPathOrder3,AStarnodesInShortestPathOrder2);
-                    return;
-                }
-                if(finishNode.previousNode!==null){
-                    for(let i=0;i<AStarvisitedNodesInOrder2.length;i++){
-                        AStarvisitedNodesInOrder.push(AStarvisitedNodesInOrder2[i]);
-                    }
-                }
-                else{
-                    AStarnodesInShortestPathOrder2=[];
-                }
-
-                this.animateDijkstra(AStarvisitedNodesInOrder, AstarnodesInShortestPathOrder,AStarnodesInShortestPathOrder2);
-        }
-        */
+            this.setState({disable: true})
+       
+            this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2);
     }
 
     eraseWalls() {
@@ -366,7 +284,7 @@ export default class PathFinder extends Component {
         this.setState({finishPos: !this.state.finishPos})
     }
 
-    finishPosition2() {
+    finishPosition2() { 
         //Toggle finishPos2 state on button press
         this.setState({finishPos2: !this.state.finishPos2})
     }
@@ -375,7 +293,7 @@ export default class PathFinder extends Component {
         const {grid} = this.state
         return (
             <div>
-                <navbar className='navbar'>
+                <navbar className='navbar' disabled={this.state.disable}>
                     <ul>
                         <li>
                             <div className = "dropdown" disabled= {this.state.disable}>
@@ -441,7 +359,7 @@ export default class PathFinder extends Component {
                         Distance: {this.state.dist}
                     </button>
                 </div>
-                <br></br> <br></br>
+                <br></br> 
                 <div className = 'gridline'>
                     {grid.map((row,rowIdx) => {
                         return (
@@ -482,7 +400,7 @@ export default class PathFinder extends Component {
 const getGrid = () => {
     //Initial grid setup
     const grid = [];
-    for ( let row = 0; row < 16; row++){
+    for ( let row = 0; row < 15; row++){
         const currentRow = [];
         for ( let col = 0; col < 50; col++){
             currentRow.push(createNode(col,row))
