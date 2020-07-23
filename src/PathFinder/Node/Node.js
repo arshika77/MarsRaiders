@@ -14,6 +14,7 @@ export default class Node extends Component {
         const {
             col,
             isFinish,
+            isFinish2,
             isStart,
             isWall,
             onMouseDown,
@@ -23,6 +24,8 @@ export default class Node extends Component {
           } = this.props;
           const extraClassName = isFinish
             ? 'node-finish'
+            :isFinish2
+            ?'node-finish2'
             : isStart
             ? 'node-start'
             : isWall
