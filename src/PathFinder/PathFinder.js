@@ -124,7 +124,7 @@ export default class PathFinder extends Component {
           setTimeout(() => {
             const node = visitedNodesInOrder[i];
             document.getElementById(`node-${node.row}-${node.col}`).className ='node node-visited';
-          }, 10 * i);
+          }, 5* i);
         }
         
     }
