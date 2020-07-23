@@ -154,7 +154,7 @@ export default class PathFinder extends Component {
     
     
 
-    visualizeDijkstra(heuristic) {
+    visualizeDijkstra(algorithm,heuristic) {
         //Start Visualization
         const {grid} = this.state;
 
@@ -164,14 +164,14 @@ export default class PathFinder extends Component {
         
         
 
-        var visitedNodesInOrder = dijkstra(grid, startNode,finishNode,heuristic);
+        var visitedNodesInOrder = dijkstra(grid, startNode,finishNode,algorithm,heuristic);
         
         var nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
         var dist1 = nodesInShortestPathOrder.length;
         console.log(nodesInShortestPathOrder);
         var nodesInShortestPathOrder2 = [];
             var grid2 = [];
-            for ( let row = 0; row < 17; row++){
+            for ( let row = 0; row < 16; row++){
                 const currentRow = [];
                 for ( let col = 0; col < 50; col++){
                     grid[row][col].distance = Infinity;
@@ -187,8 +187,8 @@ export default class PathFinder extends Component {
             finishNode = grid2[FINISH_NODE_ROW][FINISH_NODE_COL];
             finishNode2 = grid2[FINISH2_NODE_ROW][FINISH2_NODE_COL];
             
-            var visitedNodesInOrder2 = dijkstra(grid2,finishNode,finishNode2,heuristic);
-           
+            var visitedNodesInOrder2 = dijkstra(grid2,finishNode,finishNode2,algorithm,heuristic);
+            console.log(visitedNodesInOrder2);
             var nodesInShortestPathOrder2 = getNodesInShortestPathOrder(finishNode2)
             
             //console.log(nodesInShortestPathOrder2);
@@ -196,7 +196,7 @@ export default class PathFinder extends Component {
             //     nodesInShortestPathOrder = nodesInShortestPathOrder2;
             // }
             var grid3 = [];
-            for ( let row = 0; row < 17; row++){
+            for ( let row = 0; row < 16; row++){
                 const currentRow = [];
                 for ( let col = 0; col < 50; col++){
                     grid2[row][col].distance = Infinity;
@@ -212,7 +212,7 @@ export default class PathFinder extends Component {
             finishNode = grid3[FINISH_NODE_ROW][FINISH_NODE_COL];
             finishNode2 = grid3[FINISH2_NODE_ROW][FINISH2_NODE_COL];
             
-            var visitedNodesInOrder3 = dijkstra(grid3,startNode,finishNode2,heuristic);
+            var visitedNodesInOrder3 = dijkstra(grid3,startNode,finishNode2,algorithm,heuristic);
            
             var nodesInShortestPathOrder3 = getNodesInShortestPathOrder(finishNode2);
             //console.log(nodesInShortestPathOrder3[1]);
@@ -223,7 +223,7 @@ export default class PathFinder extends Component {
               //  nodesInShortestPathOrder = nodesInShortestPathOrder3;
                 nodesInShortestPathOrder2.reverse();
                 //far = finishNode;
-                if(finishNode2.previousNode!==null){ 
+                if(finishNode.previousNode!==null || finishNode2.previousNode!==null){ 
                        for(let i=0;i<visitedNodesInOrder2.length;i++){
                         visitedNodesInOrder3.push(visitedNodesInOrder2[i]);
                     }
@@ -234,7 +234,7 @@ export default class PathFinder extends Component {
                 this.animateDijkstra(visitedNodesInOrder3, nodesInShortestPathOrder3,nodesInShortestPathOrder2);
                 return;
             }
-            if(finishNode.previousNode!==null){
+            if(finishNode.previousNode!==null || finishNode2.previousNode!==null){
                 for(let i=0;i<visitedNodesInOrder2.length;i++){
                     visitedNodesInOrder.push(visitedNodesInOrder2[i]);
                 }
@@ -359,12 +359,16 @@ export default class PathFinder extends Component {
         return (
             <div>
                 <navbar className='navbar'>
-                    <button className='button' onClick={() => this.visualizeDijkstra(null)}>
+                    <button className='button' onClick={() => this.visualizeDijkstra("dijksta",null)}>
                         Visualize Dijkstra's Algorithm
                     </button>
-                    <button className='button' onClick={() => this.visualizeDijkstra('euclidean')}>
+                    <button className='button' onClick={() => this.visualizeDijkstra("astar",'euclidean')}>
                         Visualize AStar Algorithm
                     </button>
+                    <button className='button' onClick={() => this.visualizeDijkstra("bestfirst",'manhattan')}>
+                        Visualize Best First Search
+                    </button>
+                    
                     <button className = 'button' onClick={() => this.startPosition()}>
                         { this.state.startPos ? "Fix starting point" : "Move starting point"}
                     </button>
@@ -374,7 +378,6 @@ export default class PathFinder extends Component {
                     <button className = 'button' onClick={() => this.finishPosition2()}>
                         { this.state.finishPos2 ? "Fix destination point B" : "Move destination point B"}
                     </button>
-                    
                     <button className='button' onClick = { () =>  this.eraseWalls()}>
                         { this.state.erase? "Stop Erasing" : "Erase Walls"}
                     </button>
@@ -430,7 +433,7 @@ export default class PathFinder extends Component {
 const getGrid = () => {
     //Initial grid setup
     const grid = [];
-    for ( let row = 0; row < 17; row++){
+    for ( let row = 0; row < 16; row++){
         const currentRow = [];
         for ( let col = 0; col < 50; col++){
             currentRow.push(createNode(col,row))
@@ -453,7 +456,7 @@ const createNode = (col,row) => {
         isVisited: false,
         isWall: false,
         previousNode: null,
-        totalDistance: Infinity,
+        
     }
 }
 

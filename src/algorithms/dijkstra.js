@@ -1,7 +1,7 @@
 import React from 'react'
 import { manhattan, euclidean } from '../PathFinder/Heuristics'
 
-export function dijkstra(grid, startNode, finishNode,heuristic) {
+export function dijkstra(grid, startNode, finishNode,algorithm,heuristic) {
     
     const visitedNodesInOrder = []  
     startNode.distance = 0
@@ -17,9 +17,11 @@ export function dijkstra(grid, startNode, finishNode,heuristic) {
           //var visitedNodesInOrder2 = dijkstra2(grid,finishNode,finishNode2);
 
           //console.log(visitedNodesInOrder2);
+          updateUnvisitedNeighbors(closestNode,finishNode, grid,algorithm,heuristic)
+    
           return visitedNodesInOrder
         } 
-        updateUnvisitedNeighbors(closestNode,finishNode, grid,heuristic)
+        updateUnvisitedNeighbors(closestNode,finishNode, grid,algorithm,heuristic)
     }
 }
 
@@ -27,14 +29,25 @@ function sortNodesByDistance(unvisitedNodes) {
     unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
   }
   
-function updateUnvisitedNeighbors(node,finishNode, grid,heuristic) {
+function updateUnvisitedNeighbors(node,finishNode, grid,algorithm,heuristic) {
     const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
     for (const neighbor of unvisitedNeighbors) {
-      if(heuristic===null){
+      if(algorithm==="dijkstra"){
         neighbor.distance = node.distance + 1;
       }
-      else if(heuristic==='euclidean'){
+      else if(algorithm==='astar' && heuristic==='euclidean'){
         neighbor.distance = node.distance + 1 + euclidean(finishNode.col-node.col,finishNode.row-node.row);
+      }
+      else if(algorithm==='astar' && heuristic==='manhattan'){
+        neighbor.distance = node.distance + 1 + manhattan(finishNode.col-node.col,finishNode.row-node.row);
+      }
+      else if(algorithm==='bestfirst' && heuristic==='euclidean'){
+        neighbor.distance = node.distance + 1 + 100000*euclidean(finishNode.col-node.col,finishNode.row-node.row);
+      
+      }
+      else if(algorithm==='bestfirst' && heuristic==='manhattan'){
+        neighbor.distance = node.distance + 1 + 100000*manhattan(finishNode.col-node.col,finishNode.row-node.row);
+      
       }
       neighbor.previousNode = node;
     }
@@ -74,7 +87,7 @@ export function getNodesInShortestPathOrder(finishNode) {
     return nodesInShortestPathOrder;
 }
 
-export function calcDistance(nodesInShortestPathOrder){
+/*export function calcDistance(nodesInShortestPathOrder){
   var sum=0,dx,dy;
   for(let i=1;i<nodesInShortestPathOrder.length;i++){
     dy = nodesInShortestPathOrder[i].row - nodesInShortestPathOrder[i-1].row;
@@ -84,4 +97,4 @@ export function calcDistance(nodesInShortestPathOrder){
   return (sum!=0) ? sum : "No possible path";
   
   
-}
+}*/
