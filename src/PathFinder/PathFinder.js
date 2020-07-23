@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import Node from './Node/Node'
 import {dijkstra, getNodesInShortestPathOrder, calcDistance} from '../algorithms/dijkstra'
 import './PathFinder.css'
-import { euclidean, manhattan } from './Heuristics';
+import { euclidean, manhattan, chebyshev } from './Heuristics';
+import { AstarSearch, AStargetNodesInShortestPathOrder, AStarcalcDistance } from '../algorithms/AstarSearch';
 
 //Define the initial starting point and the initial destination point of the rover
 let START_NODE_ROW = 5;
@@ -156,7 +157,7 @@ export default class PathFinder extends Component {
     
     
 
-    visualizeDijkstra() {
+    visualizeDijkstra(algorithm, heuristic = null) {
         //Start Visualization
         const {grid} = this.state;
 
@@ -164,6 +165,8 @@ export default class PathFinder extends Component {
         var finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
         var finishNode2 = grid[FINISH2_NODE_ROW][FINISH2_NODE_COL];
         
+        if(algorithm==="dijkstra") {
+
         var visitedNodesInOrder = dijkstra(grid, startNode,finishNode);
         
         var nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
@@ -244,6 +247,93 @@ export default class PathFinder extends Component {
             }
 
        this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2);
+
+        }
+
+        else if (algorithm === "astar") {
+            var AStarvisitedNodesInOrder = AstarSearch(grid, startNode,finishNode,heuristic);
+        
+            var AstarnodesInShortestPathOrder = AStargetNodesInShortestPathOrder(finishNode);
+            var AStarDist1 = AstarnodesInShortestPathOrder.length;
+            //console.log(nodesInShortestPathOrder[0]);
+            var AstarnodesInShortestPathOrder2 = [];
+                var AStargrid2 = [];
+                for ( let row = 0; row < 17; row++){
+                    const currentRow = [];
+                    for ( let col = 0; col < 50; col++){
+                        grid[row][col].distance = Infinity;
+                        grid[row][col].totalDistance = Infinity;
+                        grid[row][col].heuristicDistance = null;
+                        grid[row][col].previousNode = null;
+                        grid[row][col].isVisited = false;   
+                        currentRow.push(grid[row][col]);
+                    }
+                    AStargrid2.push(currentRow)
+                }
+            
+                this.setState({grid:AStargrid2});
+                startNode = AStargrid2[START_NODE_ROW][START_NODE_COL];
+                finishNode = AStargrid2[FINISH_NODE_ROW][FINISH_NODE_COL];
+                finishNode2 = AStargrid2[FINISH2_NODE_ROW][FINISH2_NODE_COL];
+                
+                var AStarvisitedNodesInOrder2 = AstarSearch(AStargrid2,finishNode,finishNode2,heuristic);
+            
+                var AStarnodesInShortestPathOrder2 = AStargetNodesInShortestPathOrder(finishNode2)
+                
+                //console.log(nodesInShortestPathOrder2);
+                //if(nodesInShortestPathOrder.length<nodesInShortestPathOrder2.length){
+                //     nodesInShortestPathOrder = nodesInShortestPathOrder2;
+                // }
+                var AStargrid3 = [];
+                for ( let row = 0; row < 17; row++){
+                    const currentRow = [];
+                    for ( let col = 0; col < 50; col++){
+                        AStargrid2[row][col].distance = Infinity;
+                        AStargrid2[row][col].previousNode = null;
+                        AStargrid2[row][col].isVisited = false;   
+                        currentRow.push(grid2[row][col]);
+                    }
+                    AStargrid3.push(currentRow)
+                }
+            
+                this.setState({grid:AStargrid3});
+                startNode = AStargrid3[START_NODE_ROW][START_NODE_COL];
+                finishNode = AStargrid3[FINISH_NODE_ROW][FINISH_NODE_COL];
+                finishNode2 = AStargrid3[FINISH2_NODE_ROW][FINISH2_NODE_COL];
+                
+                var AStarvisitedNodesInOrder3 = AstarSearch(grid3,startNode,finishNode2,heuristic);
+            
+                var AStarnodesInShortestPathOrder3 = AStargetNodesInShortestPathOrder(finishNode2);
+                //console.log(nodesInShortestPathOrder3[1]);
+
+                var AStarfar = finishNode2;
+                if(AStarnodesInShortestPathOrder3.length < AstarnodesInShortestPathOrder.length){
+                // visitedNodesInOrder = visitedNodesInOrder3;
+                //  nodesInShortestPathOrder = nodesInShortestPathOrder3;
+                    AStarnodesInShortestPathOrder2.reverse();
+                    //far = finishNode;
+                    if(finishNode2.previousNode!==null){ 
+                        for(let i=0;i<AStarvisitedNodesInOrder2.length;i++){
+                            AStarvisitedNodesInOrder3.push(AStarvisitedNodesInOrder2[i]);
+                        }
+                    }
+                    else{
+                        AStarnodesInShortestPathOrder2=[];
+                    }
+                    this.animateDijkstra(AStarvisitedNodesInOrder3, AStarnodesInShortestPathOrder3,AStarnodesInShortestPathOrder2);
+                    return;
+                }
+                if(finishNode.previousNode!==null){
+                    for(let i=0;i<AStarvisitedNodesInOrder2.length;i++){
+                        AStarvisitedNodesInOrder.push(AStarvisitedNodesInOrder2[i]);
+                    }
+                }
+                else{
+                    AStarnodesInShortestPathOrder2=[];
+                }
+
+                this.animateDijkstra(AStarvisitedNodesInOrder, AstarnodesInShortestPathOrder,AStarnodesInShortestPathOrder2);
+        }
         
     }
 
@@ -272,17 +362,20 @@ export default class PathFinder extends Component {
         return (
             <div>
                 <navbar className='navbar'>
-                    <button className='button' onClick={() => this.visualizeDijkstra()}>
+                    <button className='button' onClick={() => this.visualizeDijkstra("dijkstra")}>
                         Visualize Dijkstra's Algorithm
+                    </button>
+                    <button className='button' onClick={() => this.visualizeDijkstra("astar",euclidean)}>
+                        Visualize AStar Algorithm
                     </button>
                     <button className = 'button' onClick={() => this.startPosition()}>
                         { this.state.startPos ? "Fix starting point" : "Move starting point"}
                     </button>
                     <button className = 'button' onClick={() => this.finishPosition()}>
-                        { this.state.finishPos ? "Fix destination point" : "Move destination point"}
+                        { this.state.finishPos ? "Fix destination point A" : "Move destination point A"}
                     </button>
                     <button className = 'button' onClick={() => this.finishPosition2()}>
-                        { this.state.finishPos2 ? "Fix 2nd destination point" : "Move 2nd destination point"}
+                        { this.state.finishPos2 ? "Fix destination point B" : "Move destination point B"}
                     </button>
                     
                     <button className='button' onClick = { () =>  this.eraseWalls()}>
@@ -359,9 +452,11 @@ const createNode = (col,row) => {
         isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
         isFinish2: row === FINISH2_NODE_ROW && col=== FINISH2_NODE_COL,
         distance: Infinity,
+        heuristicDistance: null,
         isVisited: false,
         isWall: false,
         previousNode: null,
+        totalDistance: Infinity,
     }
 }
 
