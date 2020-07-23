@@ -20,7 +20,7 @@ display: inline
   text-align: center;
   font-size: 75%;
   padding: 20px;
-  width: 16%; 
+  width: 13.1%; 
   height: 50px;
   transition: all 0.5s;
   cursor: pointer;
@@ -37,13 +37,15 @@ display: inline
   text-align: center;
   font-size: 75%;
   padding: 20px;
-  width: 16%; 
+  width: 13.1%; 
   height: 50px;
   transition: all 0.5s;
   cursor: pointer;
   float: left;
   border: 1px solid rgb(9, 1, 36);
   margin-top: 0.25%;
+  opacity: 0.65; 
+  cursor: not-allowed;
 }
 
 .dropbtn:disabled{
@@ -59,7 +61,8 @@ display: inline
   transition: all 0.5s;
   cursor: pointer;
   float: left;
-
+  opacity: 0.65; 
+  cursor: not-allowed;
 }
 .distance {
   width: 100%;
@@ -98,7 +101,7 @@ display: inline
 
 /* Dropdown Button */
 .dropbtn {
-display: inline-block;
+  display: inline-block;
   background-color: #066d20;
   border: none;
   color: #FFFFFF;
@@ -137,6 +140,18 @@ z-index: 1;
 text-align: justify;
 }
 
+.dropdown-content :disabled {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  text-align: justify;
+  opacity: 0.65; 
+  cursor: not-allowed;
+}
+
 /* Links inside the dropdown */
 .dropdown-content button {
 margin-left: 2%;
@@ -152,6 +167,14 @@ display: block;
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: table;}
 
+.dropdown:hover .dropdown-content:disabled {display: table;}
+
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {background-color:#066d20;}
+
+.dropdown:hover .dropbtn {
+  background-color: #676b68;
+  opacity: 0.65; 
+  cursor: not-allowed;
+}
 

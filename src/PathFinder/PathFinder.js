@@ -293,7 +293,7 @@ export default class PathFinder extends Component {
         const {grid} = this.state
         return (
             <div>
-                <navbar className='navbar' disabled={this.state.disable}>
+                <navbar className='navbar' >
                     <ul>
                         <li>
                             <div className = "dropdown" disabled= {this.state.disable}>
@@ -326,23 +326,28 @@ export default class PathFinder extends Component {
                             </div>
                         </li>
                         <li>
-                            <button className = 'button' onClick={() => this.startPosition()}>
+                            <button className = 'button' disabled= {this.state.disable} onClick={() => this.startPosition()}>
                                 { this.state.startPos ? "Fix starting point" : "Move starting point"}
                             </button>
                         </li>
                         <li>
-                            <button className = 'button' onClick={() => this.finishPosition()}>
+                            <button className = 'button' disabled= {this.state.disable} onClick={() => this.finishPosition()}>
                                 { this.state.finishPos ? "Fix destination point A" : "Move destination point A"}
                             </button>
                         </li>
                         <li>
-                            <button className = 'button' onClick={() => this.finishPosition2()}>
+                            <button className = 'button' disabled= {this.state.disable} onClick={() => this.finishPosition2()}>
                                 { this.state.finishPos2 ? "Fix destination point B" : "Move destination point B"}
                             </button>
                         </li>
                         <li>
-                            <button className='button' onClick = { () =>  this.eraseWalls()}>
+                            <button className='button' disabled= {this.state.disable} onClick = { () =>  this.eraseWalls()}>
                                 { this.state.erase? "Stop Erasing" : "Erase Walls"}
+                            </button>
+                        </li>
+                        <li>
+                            <button className= 'button'>
+                                Instructions
                             </button>
                         </li>
                         <li>
