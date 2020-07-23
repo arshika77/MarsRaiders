@@ -359,7 +359,7 @@ export default class PathFinder extends Component {
         return (
             <div>
                 <navbar className='navbar'>
-                    <button className='button' onClick={() => this.visualizeDijkstra("dijksta",null)}>
+                    <button className='button' onClick={() => this.visualizeDijkstra('dijkstra',null)}>
                         Visualize Dijkstra's Algorithm
                     </button>
                     <button className='button' onClick={() => this.visualizeDijkstra("astar",'euclidean')}>

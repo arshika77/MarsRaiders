@@ -32,7 +32,7 @@ function sortNodesByDistance(unvisitedNodes) {
 function updateUnvisitedNeighbors(node,finishNode, grid,algorithm,heuristic) {
     const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
     for (const neighbor of unvisitedNeighbors) {
-      if(algorithm==="dijkstra"){
+      if(algorithm==='dijkstra'){
         neighbor.distance = node.distance + 1;
       }
       else if(algorithm==='astar' && heuristic==='euclidean'){
