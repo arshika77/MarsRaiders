@@ -239,6 +239,7 @@ export default class PathFinder extends Component {
                // visitedNodesInOrder = visitedNodesInOrder3;
               //  nodesInShortestPathOrder = nodesInShortestPathOrder3;
                 nodesInShortestPathOrder2.reverse();
+                visitedNodesInOrder2.reverse();
                 //far = finishNode;
                 if(finishNode.previousNode!==null || finishNode2.previousNode!==null){ 
                        for(let i=0;i<visitedNodesInOrder2.length;i++){
@@ -247,6 +248,7 @@ export default class PathFinder extends Component {
                 }
                 else{
                     nodesInShortestPathOrder2=[];
+                    //visitedNodesInOrder2=[];
                 }
                 this.setState({disable: true})
        
@@ -282,7 +284,7 @@ export default class PathFinder extends Component {
         this.setState({finishPos: !this.state.finishPos})
     }
 
-    finishPosition2() {
+    finishPosition2() { 
         //Toggle finishPos2 state on button press
         this.setState({finishPos2: !this.state.finishPos2})
     }
@@ -291,7 +293,7 @@ export default class PathFinder extends Component {
         const {grid} = this.state
         return (
             <div>
-                <navbar className='navbar'>
+                <navbar className='navbar' disabled={this.state.disable}>
                     <ul>
                         <li>
                             <div className = "dropdown" disabled= {this.state.disable}>
