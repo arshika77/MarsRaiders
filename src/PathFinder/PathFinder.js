@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Node from './Node/Node'
 import {dijkstra, getNodesInShortestPathOrder, calcDistance} from '../algorithms/dijkstra'
+//import {findCommonElements, findElement} from './commonNodes.js'
 import './PathFinder.css'
 //Define the initial starting point and the initial destination point of the rover
 let START_NODE_ROW = 5;
@@ -23,6 +24,7 @@ export default class PathFinder extends Component {
             startPos: false,
             finishPos: false,
             finishPos2: false,
+            disable: false,
         }
     }
 
@@ -127,27 +129,41 @@ export default class PathFinder extends Component {
         
     }
     
+
     animateShortestPath(nodesInShortestPathOrder,nodesInShortestPathOrder2) {
         //animate shortest path : Refer to Node.css for animation details
-        
+
+        var commonNodes = [];
+        commonNodes = findCommonElements(nodesInShortestPathOrder,nodesInShortestPathOrder2);
+
+
         var dist1 = nodesInShortestPathOrder.length;
         for(let i=0;i<nodesInShortestPathOrder2.length;i++){
             nodesInShortestPathOrder.push(nodesInShortestPathOrder2[i]);
         }
         for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
             //Do not animate start point and destination point
-            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish || nodesInShortestPathOrder[i].isFinish2) continue  
-          setTimeout(() => {
-            const node = nodesInShortestPathOrder[i];
-            document.getElementById(`node-${node.row}-${node.col}`).className =
-              'node node-shortest-path';
-          }, 50 * i);
+            if(nodesInShortestPathOrder[i].isStart || nodesInShortestPathOrder[i].isFinish || nodesInShortestPathOrder[i].isFinish2) continue 
+            else if(i>=nodesInShortestPathOrder.length-nodesInShortestPathOrder2.length && findElement(nodesInShortestPathOrder[i],commonNodes)) {
+                setTimeout(() => {
+                    const node = nodesInShortestPathOrder[i];
+                    document.getElementById(`node-${node.row}-${node.col}`).className =
+                      'node node-shortest-path2';
+                  }, 50 * i);
+            }
+            else {
+                setTimeout(() => {
+                    const node = nodesInShortestPathOrder[i];
+                    document.getElementById(`node-${node.row}-${node.col}`).className =
+                    'node node-shortest-path';
+                }, 50 * i);
+            }
         }
         if(dist1 + nodesInShortestPathOrder2.length>2){
             this.setState({dist:dist1 + nodesInShortestPathOrder2.length-2});
         }
         else{
-            this.setState({dist : "Path Not Possible"});
+            this.setState({dist : "No Possible Path"});
         }
        
     }
@@ -155,6 +171,7 @@ export default class PathFinder extends Component {
     
 
     visualizeDijkstra(algorithm,heuristic) {
+        this.setState({disable: true})
         //Start Visualization
         const {grid} = this.state;
 
@@ -231,6 +248,8 @@ export default class PathFinder extends Component {
                 else{
                     nodesInShortestPathOrder2=[];
                 }
+                this.setState({disable: true})
+       
                 this.animateDijkstra(visitedNodesInOrder3, nodesInShortestPathOrder3,nodesInShortestPathOrder2);
                 return;
             }
@@ -243,95 +262,9 @@ export default class PathFinder extends Component {
                 nodesInShortestPathOrder2=[];
             }
 
-       this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2);
-
-        
-
-       /* else if (algorithm === "astar") {
-            var AStarvisitedNodesInOrder = AstarSearch(grid, startNode,finishNode,heuristic);
-        
-            var AstarnodesInShortestPathOrder = AStargetNodesInShortestPathOrder(finishNode);
-            var AStarDist1 = AstarnodesInShortestPathOrder.length;
-            //console.log(nodesInShortestPathOrder[0]);
-            var AstarnodesInShortestPathOrder2 = [];
-                var AStargrid2 = [];
-                for ( let row = 0; row < 17; row++){
-                    const currentRow = [];
-                    for ( let col = 0; col < 50; col++){
-                        grid[row][col].distance = Infinity;
-                        grid[row][col].totalDistance = Infinity;
-                        grid[row][col].heuristicDistance = null;
-                        grid[row][col].previousNode = null;
-                        grid[row][col].isVisited = false;   
-                        currentRow.push(grid[row][col]);
-                    }
-                    AStargrid2.push(currentRow)
-                }
-            
-                this.setState({grid:AStargrid2});
-                startNode = AStargrid2[START_NODE_ROW][START_NODE_COL];
-                finishNode = AStargrid2[FINISH_NODE_ROW][FINISH_NODE_COL];
-                finishNode2 = AStargrid2[FINISH2_NODE_ROW][FINISH2_NODE_COL];
-                
-                var AStarvisitedNodesInOrder2 = AstarSearch(AStargrid2,finishNode,finishNode2,heuristic);
-            
-                var AStarnodesInShortestPathOrder2 = AStargetNodesInShortestPathOrder(finishNode2)
-                
-                //console.log(nodesInShortestPathOrder2);
-                //if(nodesInShortestPathOrder.length<nodesInShortestPathOrder2.length){
-                //     nodesInShortestPathOrder = nodesInShortestPathOrder2;
-                // }
-                var AStargrid3 = [];
-                for ( let row = 0; row < 17; row++){
-                    const currentRow = [];
-                    for ( let col = 0; col < 50; col++){
-                        AStargrid2[row][col].distance = Infinity;
-                        AStargrid2[row][col].previousNode = null;
-                        AStargrid2[row][col].isVisited = false;   
-                        currentRow.push(grid2[row][col]);
-                    }
-                    AStargrid3.push(currentRow)
-                }
-            
-                this.setState({grid:AStargrid3});
-                startNode = AStargrid3[START_NODE_ROW][START_NODE_COL];
-                finishNode = AStargrid3[FINISH_NODE_ROW][FINISH_NODE_COL];
-                finishNode2 = AStargrid3[FINISH2_NODE_ROW][FINISH2_NODE_COL];
-                
-                var AStarvisitedNodesInOrder3 = AstarSearch(grid3,startNode,finishNode2,heuristic);
-            
-                var AStarnodesInShortestPathOrder3 = AStargetNodesInShortestPathOrder(finishNode2);
-                //console.log(nodesInShortestPathOrder3[1]);
-
-                var AStarfar = finishNode2;
-                if(AStarnodesInShortestPathOrder3.length < AstarnodesInShortestPathOrder.length){
-                // visitedNodesInOrder = visitedNodesInOrder3;
-                //  nodesInShortestPathOrder = nodesInShortestPathOrder3;
-                    AStarnodesInShortestPathOrder2.reverse();
-                    //far = finishNode;
-                    if(finishNode2.previousNode!==null){ 
-                        for(let i=0;i<AStarvisitedNodesInOrder2.length;i++){
-                            AStarvisitedNodesInOrder3.push(AStarvisitedNodesInOrder2[i]);
-                        }
-                    }
-                    else{
-                        AStarnodesInShortestPathOrder2=[];
-                    }
-                    this.animateDijkstra(AStarvisitedNodesInOrder3, AStarnodesInShortestPathOrder3,AStarnodesInShortestPathOrder2);
-                    return;
-                }
-                if(finishNode.previousNode!==null){
-                    for(let i=0;i<AStarvisitedNodesInOrder2.length;i++){
-                        AStarvisitedNodesInOrder.push(AStarvisitedNodesInOrder2[i]);
-                    }
-                }
-                else{
-                    AStarnodesInShortestPathOrder2=[];
-                }
-
-                this.animateDijkstra(AStarvisitedNodesInOrder, AstarnodesInShortestPathOrder,AStarnodesInShortestPathOrder2);
-        }
-        */
+            this.setState({disable: true})
+       
+            this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder,nodesInShortestPathOrder2);
     }
 
     eraseWalls() {
@@ -359,35 +292,72 @@ export default class PathFinder extends Component {
         return (
             <div>
                 <navbar className='navbar'>
-                    <button className='button' onClick={() => this.visualizeDijkstra('dijkstra',null)}>
-                        Visualize Dijkstra's Algorithm
-                    </button>
-                    <button className='button' onClick={() => this.visualizeDijkstra("astar",'euclidean')}>
-                        Visualize AStar Algorithm
-                    </button>
-                    <button className='button' onClick={() => this.visualizeDijkstra("bestfirst",'manhattan')}>
-                        Visualize Best First Search
-                    </button>
-                    
-                    <button className = 'button' onClick={() => this.startPosition()}>
-                        { this.state.startPos ? "Fix starting point" : "Move starting point"}
-                    </button>
-                    <button className = 'button' onClick={() => this.finishPosition()}>
-                        { this.state.finishPos ? "Fix destination point A" : "Move destination point A"}
-                    </button>
-                    <button className = 'button' onClick={() => this.finishPosition2()}>
-                        { this.state.finishPos2 ? "Fix destination point B" : "Move destination point B"}
-                    </button>
-                    <button className='button' onClick = { () =>  this.eraseWalls()}>
-                        { this.state.erase? "Stop Erasing" : "Erase Walls"}
-                    </button>
-                    <form action="http://localhost:3000/">
-                        <button className='button'> 
-                            Clear Grid 
-                        </button>    
-                    </form>
+                    <ul>
+                        <li>
+                            <div className = "dropdown" disabled= {this.state.disable}>
+                                <button className = "dropbtn" disabled= {this.state.disable} >
+                                    Choose Algorithm to Visualize
+                                </button>
+                                <div className = "dropdown-content" disabled= {this.state.disable}>
+                                    <button className='button' disabled= {this.state.disable} onClick={() => this.visualizeDijkstra("dijkstra",null)}>
+                                         Dijkstra
+                                    </button>
+                                    <button className='button' disabled= {this.state.disable} onClick={() => this.visualizeDijkstra("astar",'euclidean')}>
+                                         AStar with Euclidean
+                                    </button>
+                                    <button className='button' disabled= {this.state.disable} onClick={() => this.visualizeDijkstra("astar",'manhattan')}>
+                                         AStar with Manhattan
+                                    </button>
+                                    <button className='button' disabled= {this.state.disable} onClick={() => this.visualizeDijkstra("astar",'chebyshev')}>
+                                         AStar with Chebyshev
+                                    </button>
+                                    <button className='button' disabled= {this.state.disable} onClick={() => this.visualizeDijkstra("bestfirst",'euclidean')}>
+                                         Best First Search with Euclidean
+                                    </button>
+                                    <button className='button' disabled= {this.state.disable} onClick={() => this.visualizeDijkstra("bestfirst",'manhattan')}>
+                                         Best First Search with Manhattan
+                                    </button>
+                                    <button className='button' disabled= {this.state.disable} onClick={() => this.visualizeDijkstra("bestfirst",'chebyshev')}>
+                                         Best First Search with Chebyshev
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <button className = 'button' onClick={() => this.startPosition()}>
+                                { this.state.startPos ? "Fix starting point" : "Move starting point"}
+                            </button>
+                        </li>
+                        <li>
+                            <button className = 'button' onClick={() => this.finishPosition()}>
+                                { this.state.finishPos ? "Fix destination point A" : "Move destination point A"}
+                            </button>
+                        </li>
+                        <li>
+                            <button className = 'button' onClick={() => this.finishPosition2()}>
+                                { this.state.finishPos2 ? "Fix destination point B" : "Move destination point B"}
+                            </button>
+                        </li>
+                        <li>
+                            <button className='button' onClick = { () =>  this.eraseWalls()}>
+                                { this.state.erase? "Stop Erasing" : "Erase Walls"}
+                            </button>
+                        </li>
+                        <li>
+                            <form action="http://localhost:3000/">
+                                <button className='button'> 
+                                    Reset Grid 
+                                </button>    
+                            </form>
+                        </li>
+                    </ul>
                 </navbar>
-                <br></br> <br></br><br></br><br></br>
+                <div className = "distance">
+                    <button className='buttonBottom' >
+                        Distance: {this.state.dist}
+                    </button>
+                </div>
+                <br></br> 
                 <div className = 'gridline'>
                     {grid.map((row,rowIdx) => {
                         return (
@@ -416,11 +386,6 @@ export default class PathFinder extends Component {
                     )
                     })}
                 </div> 
-                <div>
-                    <button className='buttonBottom' >
-                        Distance: {this.state.dist}
-                    </button>
-                </div>
                 <footer className='footer'> 
                     Developed By: Arshika Lalan, Parth Agrawal, Arohi Dureja, Rupali Raniwala
                 </footer>
@@ -484,4 +449,33 @@ const getWallToggledGrid = (grid, row, col,erase) => {
     }
     newGrid[row][col] = nNode
     return newGrid
+}
+
+export function findCommonElements(array1,array2) {
+        
+    var commonNodes = []
+
+    for(let i = 0; i < array1.length; i++) { 
+      
+        // Loop for array2 
+        for(let j = 0; j < array2.length; j++) { 
+              
+            // Compare the element of each and 
+            // every element from both of the 
+            // arrays 
+            if(array1[i] === array2[j]) { 
+              
+                // Return if common element found 
+                commonNodes.push(array2[j]) 
+            } 
+        } 
+    }
+    return commonNodes
+}
+
+export function findElement(element,arr) {
+    for(let i =0; i<arr.length; i++) {
+        if(element===arr[i]) return true
+    }
+    return false
 }
