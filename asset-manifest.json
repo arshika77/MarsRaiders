@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/MarsRaiders/static/css/main.d2499277.chunk.css",
+    "main.css": "/MarsRaiders/static/css/main.ede0d3f3.chunk.css",
     "main.js": "/MarsRaiders/static/js/main.7a9025fd.chunk.js",
     "main.js.map": "/MarsRaiders/static/js/main.7a9025fd.chunk.js.map",
     "runtime-main.js": "/MarsRaiders/static/js/runtime-main.a186da62.js",
@@ -8,15 +8,15 @@
     "static/js/2.27fa5c00.chunk.js": "/MarsRaiders/static/js/2.27fa5c00.chunk.js",
     "static/js/2.27fa5c00.chunk.js.map": "/MarsRaiders/static/js/2.27fa5c00.chunk.js.map",
     "index.html": "/MarsRaiders/index.html",
-    "precache-manifest.b72faf324693b2629c44f4b3840d25eb.js": "/MarsRaiders/precache-manifest.b72faf324693b2629c44f4b3840d25eb.js",
+    "precache-manifest.e43598484caa4c3b6732181cccf71d9b.js": "/MarsRaiders/precache-manifest.e43598484caa4c3b6732181cccf71d9b.js",
     "service-worker.js": "/MarsRaiders/service-worker.js",
-    "static/css/main.d2499277.chunk.css.map": "/MarsRaiders/static/css/main.d2499277.chunk.css.map",
+    "static/css/main.ede0d3f3.chunk.css.map": "/MarsRaiders/static/css/main.ede0d3f3.chunk.css.map",
     "static/js/2.27fa5c00.chunk.js.LICENSE.txt": "/MarsRaiders/static/js/2.27fa5c00.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.a186da62.js",
     "static/js/2.27fa5c00.chunk.js",
-    "static/css/main.d2499277.chunk.css",
+    "static/css/main.ede0d3f3.chunk.css",
     "static/js/main.7a9025fd.chunk.js"
   ]
 }
