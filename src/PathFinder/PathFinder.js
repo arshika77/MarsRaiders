@@ -245,7 +245,8 @@ export default class PathFinder extends Component {
                 //far = finishNode;
                 if(finishNode.previousNode!==null || finishNode2.previousNode!==null){ 
                        for(let i=0;i<visitedNodesInOrder2.length;i++){
-                        visitedNodesInOrder3.push(visitedNodesInOrder2[i]);
+                            if(!visitedNodesInOrder3.includes(visitedNodesInOrder2[i]))
+                                visitedNodesInOrder3.push(visitedNodesInOrder2[i]);
                     }
                 }
                 else{
@@ -259,7 +260,8 @@ export default class PathFinder extends Component {
             }
             if(finishNode.previousNode!==null || finishNode2.previousNode!==null){
                 for(let i=0;i<visitedNodesInOrder2.length;i++){
-                    visitedNodesInOrder.push(visitedNodesInOrder2[i]);
+                    if(!visitedNodesInOrder.includes(visitedNodesInOrder2[i]))
+                        visitedNodesInOrder.push(visitedNodesInOrder2[i]);
                 }
             }
             else{
