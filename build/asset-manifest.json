@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/MarsRaiders/static/css/main.51ce4390.chunk.css",
+    "main.js": "/MarsRaiders/static/js/main.a9b73211.chunk.js",
+    "main.js.map": "/MarsRaiders/static/js/main.a9b73211.chunk.js.map",
+    "runtime-main.js": "/MarsRaiders/static/js/runtime-main.a186da62.js",
+    "runtime-main.js.map": "/MarsRaiders/static/js/runtime-main.a186da62.js.map",
+    "static/js/2.27fa5c00.chunk.js": "/MarsRaiders/static/js/2.27fa5c00.chunk.js",
+    "static/js/2.27fa5c00.chunk.js.map": "/MarsRaiders/static/js/2.27fa5c00.chunk.js.map",
+    "index.html": "/MarsRaiders/index.html",
+    "precache-manifest.b43115bc4f4eeb84d0196b3e263231de.js": "/MarsRaiders/precache-manifest.b43115bc4f4eeb84d0196b3e263231de.js",
+    "service-worker.js": "/MarsRaiders/service-worker.js",
+    "static/css/main.51ce4390.chunk.css.map": "/MarsRaiders/static/css/main.51ce4390.chunk.css.map",
+    "static/js/2.27fa5c00.chunk.js.LICENSE.txt": "/MarsRaiders/static/js/2.27fa5c00.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a186da62.js",
+    "static/js/2.27fa5c00.chunk.js",
+    "static/css/main.51ce4390.chunk.css",
+    "static/js/main.a9b73211.chunk.js"
+  ]
+}
