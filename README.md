@@ -29,7 +29,6 @@ Algorithms Used :
   When all the neighbours of the current Node have been visited, remove it from the set of unvisited nodes and move on to the next node.
   The algorithm terminates when the endNode becomes a part of the visitedSet or when the smallest distance in the unvisited set becomes infinity indicating that the node is not   accessible.
   Then, we backtrack from the endNode to the startNode for getting the shortest path.
-
   The optimal complexity of the algorithm is  O((V + E)logV) [where V is the number of nodes and E is the number of edges] by using a min-priority queue. However, in this         project we have implemented this algorithm using an array because of its simplicity. It runs in O(V2). 
   Some problems with the algorithm include negative cycles, and exploration of extra nodes which are not in the direction of the endNodes.
 
