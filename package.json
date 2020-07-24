@@ -2,6 +2,7 @@
   "name": "my-app2",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://arshika77.github.io/MarsRaiders/",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -11,7 +12,7 @@
     "react-scripts": "3.4.1",
     "reactjs-popup": "^1.5.0"
   },
-  "homepage": "https://arshika77.github.io/MarsRaiders/",
+  
   "scripts": {
     "start": "react-scripts start",
     "predeploy": "npm run build",
