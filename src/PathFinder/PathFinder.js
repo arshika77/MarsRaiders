@@ -350,7 +350,7 @@ export default class PathFinder extends Component {
                             </button>
                         </li>
                         <li>
-                            <form action="http://localhost:3000/">
+                            <form action="https://arshika77.github.io/MarsRaiders/">
                                 <button className='button'> 
                                     Reset Grid 
                                 </button>    
