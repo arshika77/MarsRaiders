@@ -11,11 +11,11 @@
     "react-scripts": "3.4.1",
     "reactjs-popup": "^1.5.0"
   },
-
-  "homepage": ".",
-
+  "homepage": "https://arshika77.github.io/MarsRaiders/",
   "scripts": {
     "start": "react-scripts start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -34,5 +34,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
   }
 }
