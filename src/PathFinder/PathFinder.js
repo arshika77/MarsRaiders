@@ -4,10 +4,6 @@ import Node from './Node/Node'
 import {dijkstra, getNodesInShortestPathOrder, calcDistance} from '../algorithms/dijkstra'
 //import {findCommonElements, findElement} from './commonNodes.js'
 import './PathFinder.css'
-<<<<<<< HEAD
-
-=======
->>>>>>> Final
 //Define the initial starting point and the initial destination point of the rover
 let START_NODE_ROW = 5;
 let START_NODE_COL = 15;
@@ -299,26 +295,6 @@ export default class PathFinder extends Component {
         const {grid} = this.state
         return (
             <div>
-<<<<<<< HEAD
-                <navbar className='navbar'>
-                    <button className='button' onClick={() => this.visualizeDijkstra()}>
-                        Visualize Dijkstra's Algorithm
-                    </button>
-                    <button className = 'button' onClick={() => this.startPosition()}>
-                        { this.state.startPos ? "Fix starting point" : "Move starting point"}
-                    </button>
-                    <button className = 'button' onClick={() => this.finishPosition()}>
-                        { this.state.finishPos ? "Fix destination point" : "Move destination point"}
-                    </button>
-                    <button className='button' onClick = { () =>  this.eraseWalls()}>
-                        { this.state.erase? "Stop Erasing" : "Erase Walls"}
-                    </button>
-                    <form action="http://localhost:3000/">
-                        <button className='button'> 
-                            Clear Grid 
-                        </button>    
-                    </form>
-=======
                 <navbar className='navbar' >
                     <ul>
                         <li>
@@ -410,7 +386,6 @@ export default class PathFinder extends Component {
                             </Popup>
                         </li>
                     </ul>
->>>>>>> Final
                 </navbar>
                 <div className = "distance">
                     <button className='buttonBottom' >
