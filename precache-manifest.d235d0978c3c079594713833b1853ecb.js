@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "4ac8c3625e77ff64a36b3d7b5da22f09",
+    "revision": "5ee8083f21aec0860a371ff765de5065",
     "url": "/MarsRaiders/index.html"
   },
   {
-    "revision": "b731716f0f77d0ebbff7",
+    "revision": "1673fd4634d300d66adf",
     "url": "/MarsRaiders/static/css/main.88832de6.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/MarsRaiders/static/js/2.27fa5c00.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "b731716f0f77d0ebbff7",
-    "url": "/MarsRaiders/static/js/main.4fd803cb.chunk.js"
+    "revision": "1673fd4634d300d66adf",
+    "url": "/MarsRaiders/static/js/main.7a9025fd.chunk.js"
   },
   {
     "revision": "a4b5a03c4acb740b7509",
