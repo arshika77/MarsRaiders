@@ -27,6 +27,8 @@ export default class PathFinder extends Component {
             finishPos2: false,
             disable: false,
             seen: false,
+            algorithm: null,
+            heuristic: null,
         }
     }
 
@@ -173,7 +175,7 @@ export default class PathFinder extends Component {
     
 
     visualizeDijkstra(algorithm,heuristic) {
-        this.setState({disable: true})
+        this.setState({disable: true, algorithm: algorithm, heuristic: heuristic})
         //Start Visualization
         const {grid} = this.state;
 
@@ -390,11 +392,14 @@ export default class PathFinder extends Component {
                     </ul>
                 </navbar>
                 <div className = "distance">
+                    <button className = 'buttonBottom'>
+                      <b>Algortihm</b>: {this.state.algorithm? (this.state.algorithm).toUpperCase() : "Choose Algorithm"} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Heuristic</b>: {this.state.heuristic? (this.state.heuristic).toUpperCase() : "None selected"}
+                    </button>
                     <button className='buttonBottom' >
-                        Distance: {this.state.dist}
+                       <b>Distance</b>: {this.state.dist}
                     </button>
                 </div>
-                <br></br> 
+                <br></br> <br></br>
                 <div className = 'gridline'>
                     {grid.map((row,rowIdx) => {
                         return (

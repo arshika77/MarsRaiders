@@ -66,22 +66,22 @@ display: inline
 }
 .distance {
   width: 100%;
+  float: left;
 }
 
 .buttonBottom {
   display: inline-block;
   background-color: darkslategray; 
   margin-top: 0px;
-  margin-bottom: 0px;
+  margin-bottom: 2%;
   border: none;
   color: #FFFFFF;
   text-align: center;
   font-size: 12px;
-  width: 100%;
+  width: 50%;
   height: 5%;
   transition: all 0.5s;
   cursor: normal;
-  
   border: 1px solid rgb(9, 1, 36);
 }
 
